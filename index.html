@@ -1,0 +1,119 @@
+<!doctype html>
+<html data-webtui-theme="catppuccin-mocha" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal portfolio">
+  <title>~/home - Terminal Portfolio</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="htmx.org" defer></script>  
+</head>
+<body>
+  <div class="terminal-container">
+    <header box-="round" class="terminal-header">
+      <span class="prompt">trinity@tringl.dev <span style="color: pink;">~</span> <span style="color: gray;">></span></span><span class="cursor">█</span>
+    </header>
+
+    <main class="terminal-content">
+      <!-- ABOUT SECTION -->
+      <section box-="round" class="terminal-box" id="about">
+        <h2 class="box-title">ABOUT</h2>
+        <div class="box-content">
+          <p>Hi! I'm Trinity, a developer & computer science student who loves creating stuff and learning new things.</p>
+          <p>I'm passionate about programming, music, video games and improving myself.</p>
+          <p>I also really enjoy low-level programming and reverse engineering.</p>
+          <p>My favorite languages are C++, Go & Rust(although I suck at it :P).</p>
+          <p class="accent">&gt; Explore my projects and writings below!</p>
+        </div>
+      </section>
+
+      <!-- TWO COLUMN LAYOUT -->
+      <div class="terminal-grid">
+        <!-- PINNED PROJECT -->
+        <section box-="round" class="terminal-box" id="pinned-project">
+          <h3 class="box-title">PINNED PROJECT</h3>
+          <div class="box-content">
+            <div 
+              hx-get="/api/pinned-project" 
+              hx-trigger="load, every 10s"
+              hx-swap="innerHTML">
+              <a href="#" class="terminal-link">Loading project...</a>
+              <p class="small">Fetching pinned project...</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- LATEST POST -->
+        <section box-="round" class="terminal-box" id="latest-post">
+          <h3 class="box-title">LATEST POST</h3>
+          <div class="box-content">
+            <a href="#" class="terminal-link">My Latest Blog Post</a>
+            <p class="small">October 3, 2025</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- MUSIC SECTION -->
+      <section box-="round" class="terminal-box" id="music">
+        <h2 class="box-title">MUSIC</h2>
+        <div class="box-content">
+          <div 
+            hx-get="/api/music" 
+            hx-trigger="load"
+            hx-swap="innerHTML"
+            class="music-player">
+            <p class="loading">♫ Loading current track...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SOCIALS SECTION -->
+      <section box-="round" class="terminal-box" id="socials">
+        <h2 class="box-title">SOCIALS</h2>
+        <div class="box-content socials-grid">
+          <a href="https://github.com/ummhii" class="social-link">[GitHub]</a>
+          <a href="https://x.com/thetringl" class="social-link">[Twitter]</a>
+          <a href="https://steamcommunity.com/id/trinitytringl" class="social-link">[Steam]</a>
+          <a href="https://www.last.fm/user/trinity_tringl" class="social-link">[Last.fm]</a>
+          <a href="mailto:trinity.tringl@email.com" class="social-link">[Email]</a>
+        </div>
+      </section>
+
+      <!-- CONTACT FORM -->
+      <section box-="round" class="terminal-box" id="contact">
+        <h2 class="box-title">CONTACT</h2>
+        <div class="box-content">
+          <form 
+            hx-post="/api/contact" 
+            hx-target="#contact-response"
+            hx-swap="innerHTML"
+            class="contact-form">
+            <div class="form-group">
+              <label for="email">&gt; EMAIL:</label>
+              <input type="text" id="email" name="email" class="terminal-input" placeholder-="username#0000">
+            </div>
+            <div class="form-group">
+              <label for="name">&gt; TITLE:</label>
+              <input type="text" id="name" name="name" class="terminal-input" placeholder-="Your name..." required>
+            </div>
+            <div class="form-group">
+              <label for="message">&gt; MESSAGE:</label>
+              <textarea id="message" name="message" class="terminal-input" rows="4" placeholder-="Your message..." required></textarea>
+            </div>
+            <button type="submit" class="terminal-button" variant-="primary">[ Send ]</button>
+          </form>
+          <div id="contact-response" class="response-message"></div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer box-="round" class="terminal-footer">
+        <p>Made using HTMX</p>
+        <p>Styled with Catppuccin Mocha Theme</p>
+      </footer>
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
