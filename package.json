@@ -1,11 +1,12 @@
 {
   "name": "tringldev",
+  "private": true,
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "preview": "npm run build && vite preview",
     "deploy": "vite build && wrangler deploy"
   },
   "keywords": [],
