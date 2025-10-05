@@ -1,0 +1,7 @@
+{
+  "name": "tringldev",
+  "compatibility_date": "2025-01-05",
+  "assets": {
+    "directory": "./dist"
+  }
+}
