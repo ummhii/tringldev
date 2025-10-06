@@ -61,18 +61,35 @@
       </div>
 
       <!-- MUSIC SECTION -->
-      <section box-="round" class="terminal-box" id="music">
-        <h2 class="box-title">MUSIC</h2>
-        <div class="box-content">
-          <div
-            hx-get="https://tringldev-server.fly.dev/api/now-playing"
-            hx-trigger="load, every 15s"
-            hx-swap="innerHTML"
-            class="music-player">
-            <p class="loading">♫ Loading current track...</p>
+      <div class="terminal-grid">
+        <!-- NOW PLAYING -->
+        <section box-="round" class="terminal-box" id="now-playing">
+          <h3 class="box-title">NOW PLAYING</h3>
+          <div class="box-content">
+            <div
+              hx-get="https://tringldev-server.fly.dev/api/now-playing"
+              hx-trigger="load, every 15s"
+              hx-swap="innerHTML"
+              class="music-player">
+              <p class="loading">♫ Loading current track...</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        <!-- TOP ARTISTS -->
+        <section box-="round" class="terminal-box" id="top-artists">
+          <h3 class="box-title">TOP ARTISTS</h3>
+          <div class="box-content">
+            <div
+              hx-get="https://tringldev-server.fly.dev/api/top-artists?period=7day&limit=5"
+              hx-trigger="load, every 60s"
+              hx-swap="innerHTML"
+              class="top-artists-list">
+              <p class="loading">Loading top artists...</p>
+            </div>
+          </div>
+        </section>
+      </div>
 
       <!-- SOCIALS SECTION -->
       <section box-="round" class="terminal-box" id="socials">

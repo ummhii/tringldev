@@ -67,11 +67,10 @@ document.body.addEventListener('htmx:afterSwap', function(event) {
   
 
         target.innerHTML = `
-          <p>♫ Now Playing:</p>
           <p class="highlight">${data.songName}</p>
           <p class="small">by ${data.artistName}</p>
           ${data.albumName ? `<p class="small">from "${data.albumName}"</p>` : ''}
-          ${data.songUrl ? `<a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">View on Last.fm</a>` : ''}
+          ${data.songUrl ? `<a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">View on Last.fm →</a>` : ''}
         `;
         cachedSongData = data; // Cache the current song data
       } else {
@@ -85,6 +84,31 @@ document.body.addEventListener('htmx:afterSwap', function(event) {
     } catch (e) {
       target.innerHTML = `<p class="small" style="color: var(--ctp-mocha-red);">Failed to load music data</p>`;
       cachedSongData = null; // Clear cache on error
+    }
+  }
+
+  // Handle top artists response
+  if (event.detail.requestConfig.path.includes('top-artists')) {
+    try {
+      const data = JSON.parse(event.detail.xhr.responseText);
+      
+      if (data.artists && data.artists.length > 0) {
+        target.innerHTML = data.artists.map((artist, index) => `
+          <div class="artist-item">
+            <span class="artist-rank">#${index + 1}</span>
+            <span class="artist-name">${artist.name}</span>
+            <span class="artist-plays">(${artist.playcount} plays)</span>
+          </div>
+        `).join('');
+      } else {
+        target.innerHTML = `
+          <p class="small" style="color: var(--ctp-mocha-overlay1);">
+            No artist data available
+          </p>
+        `;
+      }
+    } catch (e) {
+      target.innerHTML = `<p class="small" style="color: var(--ctp-mocha-red);">Failed to load top artists</p>`;
     }
   }
 
@@ -128,6 +152,10 @@ document.body.addEventListener('htmx:responseError', function(event) {
   if (event.detail.requestConfig.path.includes('now-playing')) {
     target.innerHTML = `<p class="small" style="color: var(--ctp-mocha-red);">Unable to fetch music data</p>`;
     cachedSongData = null; // Clear cache on error
+  }
+
+  if (event.detail.requestConfig.path.includes('top-artists')) {
+    target.innerHTML = `<p class="small" style="color: var(--ctp-mocha-red);">Unable to fetch top artists</p>`;
   }
 
   if (event.detail.requestConfig.path.includes('/api/contact')) {

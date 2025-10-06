@@ -404,6 +404,42 @@ textarea.terminal-input {
   border-left: 3px solid var(--ctp-mocha-mauve);
 }
 
+.top-artists-list {
+  padding: 0;
+}
+
+.artist-item {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ctp-mocha-surface0);
+  transition: all 0.2s ease;
+}
+
+.artist-item:last-child {
+  border-bottom: none;
+}
+
+.artist-item:hover {
+  padding-left: 5px;
+  border-left: 3px solid var(--ctp-mocha-mauve);
+}
+
+.artist-rank {
+  color: var(--ctp-mocha-yellow);
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.artist-name {
+  color: var(--ctp-mocha-text);
+  font-weight: 500;
+}
+
+.artist-plays {
+  color: var(--ctp-mocha-overlay1);
+  font-size: 0.85em;
+  margin-left: 8px;
+}
+
 .loading {
   color: var(--ctp-mocha-subtext0);
   animation: pulse 2s infinite;
