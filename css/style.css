@@ -10,6 +10,12 @@
 @import '@webtui/plugin-nf';
 @import '@webtui/theme-catppuccin';
 
+@layer base {
+  :root {
+      --font-family: 'JetBrainsMono Nerd Font Mono', 'JetBrains Mono', monospace, "Symbols Nerd Font";
+  }
+}
+
 html {
   color: #222;
   font-size: 1em;
@@ -158,6 +164,23 @@ body {
 @keyframes blink {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
+}
+
+#terminal::before {
+  content: "\f120"; /* Nerd Font icon for terminal */
+  color: var(--ctp-mocha-text);
+  font-weight: normal;
+  margin-right: 5px;
+}
+
+/* make terminal icon fade in and out */
+#terminal::before {
+  animation: fadeInOut 3s infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0; }
 }
 
 /* Main Content */
@@ -619,4 +642,3 @@ textarea.terminal-input {
     page-break-after: avoid;
   }
 }
-

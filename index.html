@@ -6,12 +6,14 @@
     <meta name="description" content="Personal portfolio">
   <title>~/home - Terminal Portfolio</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="htmx.org" defer></script>  
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.js" integrity="sha384-yWakaGAFicqusuwOYEmoRjLNOC+6OFsdmwC2lbGQaRELtuVEqNzt11c2J711DeCZ" crossorigin="anonymous"></script>
+  <meta name="htmx-config" content='{"selfRequestsOnly":false}'>
+  <script src="js/app.js" defer></script>
 </head>
 <body>
   <div class="terminal-container">
     <header box-="round" class="terminal-header">
-      <span class="prompt">trinity@tringl.dev <span style="color: pink;">~</span> <span style="color: gray;">></span></span><span class="cursor">█</span>
+      <span class="prompt"><span id="terminal"></span>trinity@tringl.dev <span style="color: pink;">~</span> <span style="color: gray;">></span></span><span class="cursor">█</span>
     </header>
 
     <main class="terminal-content">
@@ -34,8 +36,8 @@
           <h3 class="box-title">PINNED PROJECT</h3>
           <div class="box-content">
             <div 
-              hx-get="/api/pinned-project" 
-              hx-trigger="load, every 10s"
+              hx-get="https://tringldev-server.fly.dev/api/pinned-repo" 
+              hx-trigger="load, every 30s"
               hx-swap="innerHTML">
               <a href="#" class="terminal-link">Loading project...</a>
               <p class="small">Fetching pinned project...</p>
@@ -57,9 +59,9 @@
       <section box-="round" class="terminal-box" id="music">
         <h2 class="box-title">MUSIC</h2>
         <div class="box-content">
-          <div 
-            hx-get="/api/music" 
-            hx-trigger="load"
+          <div
+            hx-get="https://tringldev-server.fly.dev/api/now-playing/" 
+            hx-trigger="load, every 15s"
             hx-swap="innerHTML"
             class="music-player">
             <p class="loading">♫ Loading current track...</p>
@@ -72,10 +74,8 @@
         <h2 class="box-title">SOCIALS</h2>
         <div class="box-content socials-grid">
           <a href="https://github.com/ummhii" class="social-link">[GitHub]</a>
-          <a href="https://x.com/thetringl" class="social-link">[Twitter]</a>
           <a href="https://steamcommunity.com/id/trinitytringl" class="social-link">[Steam]</a>
           <a href="https://www.last.fm/user/trinity_tringl" class="social-link">[Last.fm]</a>
-          <a href="mailto:trinity.tringl@email.com" class="social-link">[Email]</a>
         </div>
       </section>
 
@@ -113,7 +113,5 @@
       </footer>
     </main>
   </div>
-
-  <script src="js/app.js"></script>
 </body>
 </html>

@@ -1,56 +1,3 @@
-
-document.body.addEventListener('htmx:configRequest', function(event) {
-  // Prevent actual HTTP requests for demo purposes
-  if (event.detail.path.includes('/api/')) {
-    event.preventDefault();
-    
-    // Simulate API responses
-    setTimeout(() => {
-      const target = document.querySelector(event.detail.target);
-      
-      if (event.detail.path.includes('/api/random-project')) {
-        const projects = [
-          { name: 'Terminal Portfolio', desc: 'A retro terminal-style portfolio website', url: '#' },
-          { name: 'HTMX Dashboard', desc: 'Real-time dashboard built with HTMX', url: '#' },
-          { name: 'Code Visualizer', desc: 'Interactive code visualization tool', url: '#' },
-          { name: 'API Monitor', desc: 'Monitor and debug APIs in real-time', url: '#' }
-        ];
-        const random = projects[Math.floor(Math.random() * projects.length)];
-        target.innerHTML = `
-          <a href="${random.url}" class="terminal-link">${random.name}</a>
-          <p class="small">${random.desc}</p>
-        `;
-      }
-      
-      if (event.detail.path.includes('/api/music')) {
-        const songs = [
-          { title: 'Synthwave Dreams', artist: 'Cyberpunk Radio' },
-          { title: 'Digital Rain', artist: 'Terminal Beats' },
-          { title: 'Code & Coffee', artist: 'Dev Lofi' },
-          { title: 'Neon Nights', artist: 'Retrowave FM' }
-        ];
-        const random = songs[Math.floor(Math.random() * songs.length)];
-        target.innerHTML = `
-          <p>♫ Now Playing:</p>
-          <p class="highlight">${random.title}</p>
-          <p class="small">by ${random.artist}</p>
-        `;
-      }
-      
-      if (event.detail.path.includes('/api/contact')) {
-        const responseDiv = document.getElementById('contact-response');
-        responseDiv.innerHTML = `
-          <p style="color: #a6e3a1;">
-            ✓ Message sent successfully! I'll get back to you soon.
-          </p>
-        `;
-        event.target.reset();
-      }
-    }, 500);
-  }
-});
-
-
 document.addEventListener('DOMContentLoaded', function() {
   const header = document.querySelector('.terminal-header');
   if (header) {
@@ -138,6 +85,120 @@ function createMatrixRain() {
     canvas.height = window.innerHeight;
   });
 }
+
+// Handle HTMX responses from the real API
+document.body.addEventListener('htmx:afterSwap', function(event) {
+  const target = event.detail.target;
+  
+  // Handle pinned repo response
+  if (event.detail.requestConfig.path.includes('pinned-repo')) {
+    try {
+      const data = JSON.parse(event.detail.xhr.responseText);
+      target.innerHTML = `
+        <a href="${data.url}" class="terminal-link" target="_blank" rel="noopener noreferrer">
+          ${data.name}
+        </a>
+        <p class="small">${data.description || 'No description available'}</p>
+        ${data.language ? `<p class="small">Language: <span class="highlight">${data.language}</span></p>` : ''}
+        <p class="small">${data.stars || 0} stars | ${data.forks || 0} forks</p>
+      `;
+    } catch (e) {
+      target.innerHTML = `<p class="small" style="color: var(--ctp-mocha-red);">Failed to load project</p>`;
+    }
+  }
+  
+  // Handle now-playing response
+  if (event.detail.requestConfig.path.includes('now-playing')) {
+    try {
+      const data = JSON.parse(event.detail.xhr.responseText);
+      
+      if (data.isPlaying) {
+        target.innerHTML = `
+          <p>♫ Now Playing:</p>
+          <p class="highlight">${data.songName}</p>
+          <p class="small">by ${data.artistName}</p>
+          ${data.albumName ? `<p class="small">from "${data.albumName}"</p>` : ''}
+          ${data.songUrl ? `<a href="${data.songUrl}" class="terminal-link small" target="_blank" rel="noopener noreferrer">View on Last.fm</a>` : ''}
+        `;
+      } else {
+        target.innerHTML = `
+          <p class="small" style="color: var(--ctp-mocha-overlay1);">
+            Not currently playing anything
+          </p>
+        `;
+      }
+    } catch (e) {
+      target.innerHTML = `<p class="small" style="color: var(--ctp-mocha-red);">Failed to load music data</p>`;
+    }
+  }
+});
+
+// Handle API errors
+document.body.addEventListener('htmx:responseError', function(event) {
+  const target = event.detail.target;
+  
+  if (event.detail.requestConfig.path.includes('pinned-repo')) {
+    target.innerHTML = `<p class="small" style="color: var(--ctp-mocha-red);">Unable to fetch project data</p>`;
+  }
+  
+  if (event.detail.requestConfig.path.includes('now-playing')) {
+    target.innerHTML = `<p class="small" style="color: var(--ctp-mocha-red);">Unable to fetch music data</p>`;
+  }
+});
+
+// Keep existing contact form handler for demo
+document.body.addEventListener('htmx:configRequest', function(event) {
+  if (event.detail.path.includes('/api/contact')) {
+    event.preventDefault();
+    
+    setTimeout(() => {
+      const responseDiv = document.getElementById('contact-response');
+      responseDiv.innerHTML = `
+        <p style="color: #a6e3a1;">
+          ✓ Message sent successfully! I'll get back to you soon.
+        </p>
+      `;
+      event.target.reset();
+    }, 500);
+  }
+});
+
+// Keep existing DOM animations
+document.addEventListener('DOMContentLoaded', function() {
+  const header = document.querySelector('.terminal-header');
+  if (header) {
+    header.style.opacity = '0';
+    setTimeout(() => {
+      header.style.transition = 'opacity 0.5s ease';
+      header.style.opacity = '1';
+    }, 100);
+  }
+  
+  const boxes = document.querySelectorAll('.terminal-box');
+  boxes.forEach((box, index) => {
+    box.style.opacity = '0';
+    box.style.transform = 'translateY(20px)';
+    setTimeout(() => {
+      box.style.transition = 'all 0.5s ease';
+      box.style.opacity = '1';
+      box.style.transform = 'translateY(0)';
+    }, 100 * (index + 1));
+  });
+});
+
+// Keep existing keyboard shortcuts
+document.addEventListener('keydown', function(event) {
+  if (event.ctrlKey && event.key === 'k') {
+    event.preventDefault();
+    document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('name').focus();
+  }
+  
+  if (event.ctrlKey && event.key === 'h') {
+    event.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
 
 console.log('%c> Terminal Portfolio Loaded', 'color: #cba6f7; font-size: 16px; font-family: monospace;');
 console.log('%c> Type Ctrl+K to jump to contact form', 'color: #89dceb; font-size: 12px; font-family: monospace;');
