@@ -12,11 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const boxes = document.querySelectorAll('.terminal-box');
   boxes.forEach((box, index) => {
     box.style.opacity = '0';
-    box.style.transform = 'translateY(20px)';
     setTimeout(() => {
       box.style.transition = 'all 0.5s ease';
       box.style.opacity = '1';
-      box.style.transform = 'translateY(0)';
     }, 100 * (index + 1));
   });
 });
@@ -86,6 +84,8 @@ function createMatrixRain() {
   });
 }
 
+let cachedSongData = null;
+
 // Handle HTMX responses from the real API
 document.body.addEventListener('htmx:afterSwap', function(event) {
   const target = event.detail.target;
@@ -113,6 +113,8 @@ document.body.addEventListener('htmx:afterSwap', function(event) {
       const data = JSON.parse(event.detail.xhr.responseText);
       
       if (data.isPlaying) {
+  
+
         target.innerHTML = `
           <p>♫ Now Playing:</p>
           <p class="highlight">${data.songName}</p>
@@ -120,15 +122,18 @@ document.body.addEventListener('htmx:afterSwap', function(event) {
           ${data.albumName ? `<p class="small">from "${data.albumName}"</p>` : ''}
           ${data.songUrl ? `<a href="${data.songUrl}" class="terminal-link small" target="_blank" rel="noopener noreferrer">View on Last.fm</a>` : ''}
         `;
+        cachedSongData = data; // Cache the current song data
       } else {
         target.innerHTML = `
           <p class="small" style="color: var(--ctp-mocha-overlay1);">
             Not currently playing anything
           </p>
         `;
+        cachedSongData = null; // Clear cache when not playing
       }
     } catch (e) {
       target.innerHTML = `<p class="small" style="color: var(--ctp-mocha-red);">Failed to load music data</p>`;
+      cachedSongData = null; // Clear cache on error
     }
   }
 });
@@ -143,6 +148,7 @@ document.body.addEventListener('htmx:responseError', function(event) {
   
   if (event.detail.requestConfig.path.includes('now-playing')) {
     target.innerHTML = `<p class="small" style="color: var(--ctp-mocha-red);">Unable to fetch music data</p>`;
+    cachedSongData = null; // Clear cache on error
   }
 });
 
@@ -177,11 +183,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const boxes = document.querySelectorAll('.terminal-box');
   boxes.forEach((box, index) => {
     box.style.opacity = '0';
-    box.style.transform = 'translateY(20px)';
     setTimeout(() => {
       box.style.transition = 'all 0.5s ease';
       box.style.opacity = '1';
-      box.style.transform = 'translateY(0)';
     }, 100 * (index + 1));
   });
 });
