@@ -67,10 +67,15 @@ document.body.addEventListener('htmx:afterSwap', function(event) {
   
 
         target.innerHTML = `
-          <p class="highlight">${data.songName}</p>
-          <p class="small">by ${data.artistName}</p>
-          ${data.albumName ? `<p class="small">from "${data.albumName}"</p>` : ''}
-          ${data.songUrl ? `<a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">View on Last.fm →</a>` : ''}
+          <div class="now-playing-content">
+            ${data.albumArt ? `<img src="${data.albumArt}" alt="Album art for ${data.albumName || data.songName}" class="album-art">` : ''}
+            <div class="song-details">
+              <h3 class="highlight">${data.songName}</h3>
+              <p class="small">by ${data.artistName}</p>
+              ${data.albumName ? `<p class="small">from "${data.albumName}"</p>` : ''}
+              ${data.songUrl ? `<a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">View on Last.fm →</a>` : ''}
+            </div>
+          </div>
         `;
         cachedSongData = data; // Cache the current song data
       } else {
@@ -116,6 +121,7 @@ document.body.addEventListener('htmx:afterSwap', function(event) {
   if (event.detail.requestConfig.path.includes('/api/contact')) {
     setTimeout(() => {
       const responseDiv = document.getElementById('contact-response');
+      responseDiv.hidden = false;
       responseDiv.innerHTML = `
         <p style="color: #a6e3a1;">
           ✓ Message sent successfully! I'll get back to you soon.
@@ -160,6 +166,7 @@ document.body.addEventListener('htmx:responseError', function(event) {
 
   if (event.detail.requestConfig.path.includes('/api/contact')) {
     const responseDiv = document.getElementById('contact-response');
+    responseDiv.hidden = false;
     responseDiv.innerHTML = `
       <p style="color: var(--ctp-mocha-red);">
         ✗ Failed to send message. Please try again later.
