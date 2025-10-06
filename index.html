@@ -49,8 +49,13 @@
         <section box-="round" class="terminal-box" id="latest-post">
           <h3 class="box-title">LATEST POST</h3>
           <div class="box-content">
-            <a href="#" class="terminal-link">My Latest Blog Post</a>
-            <p class="small">October 3, 2025</p>
+            <div 
+              hx-get="https://tringldev-server.fly.dev/api/latest-post" 
+              hx-trigger="load"
+              hx-swap="innerHTML">
+              <a href="#" class="terminal-link">Loading post...</a>
+              <p class="small">Fetching latest blog post...</p>
+            </div>
           </div>
         </section>
       </div>
@@ -84,7 +89,7 @@
         <h2 class="box-title">CONTACT</h2>
         <div class="box-content">
           <form 
-            hx-post="/api/contact" 
+            hx-post="https://tringldev-server.fly.dev/api/contact" 
             hx-target="#contact-response"
             hx-swap="innerHTML"
             class="contact-form">
