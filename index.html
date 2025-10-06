@@ -81,8 +81,8 @@
           <h3 class="box-title">TOP ARTISTS</h3>
           <div class="box-content">
             <div
-              hx-get="https://tringldev-server.fly.dev/api/top-artists?period=7day&limit=5"
-              hx-trigger="load, every 60s"
+              hx-get="https://tringldev-server.fly.dev/api/top-artists?limit=4"
+              hx-trigger="load"
               hx-swap="innerHTML"
               class="top-artists-list">
               <p class="loading">Loading top artists...</p>
