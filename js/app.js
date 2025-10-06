@@ -71,7 +71,7 @@ document.body.addEventListener('htmx:afterSwap', function(event) {
           <p class="highlight">${data.songName}</p>
           <p class="small">by ${data.artistName}</p>
           ${data.albumName ? `<p class="small">from "${data.albumName}"</p>` : ''}
-          ${data.songUrl ? `<a href="${data.songUrl}" class="terminal-link small" target="_blank" rel="noopener noreferrer">View on Last.fm</a>` : ''}
+          ${data.songUrl ? `<a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">View on Last.fm</a>` : ''}
         `;
         cachedSongData = data; // Cache the current song data
       } else {

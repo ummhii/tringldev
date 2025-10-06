@@ -310,7 +310,7 @@ body {
 .terminal-link {
   color: var(--ctp-mocha-sapphire);
   text-decoration: none;
-  border-bottom: 1px dotted var(--ctp-mocha-sapphire);
+  border-bottom: 1px solid var(--ctp-mocha-sapphire);
   transition: all 0.3s ease;
 }
 
@@ -322,6 +322,11 @@ body {
 .small {
   font-size: 0.85em;
   color: var(--ctp-mocha-overlay1);
+  margin-top: 5px;
+}
+
+.music-link {
+  font-size: 0.85em;
   margin-top: 5px;
 }
 
@@ -480,10 +485,6 @@ textarea.terminal-input {
   text-shadow: none;
 }
 
-/* ==========================================================================
-   Helper classes
-   ========================================================================== */
-
 /*
  * Hide visually and from screen readers
  */
@@ -492,15 +493,6 @@ textarea.terminal-input {
 [hidden] {
   display: none !important;
 }
-
-/*
- * Hide only visually, but have it available for screen readers:
- * https://snook.ca/archives/html_and_css/hiding-content-for-accessibility
- *
- * 1. For long content, line feeds are not interpreted as spaces and small width
- *    causes content to wrap 1 word per line:
- *    https://medium.com/@jessebeach/beware-smushed-off-screen-accessible-text-5952a4c2cbfe
- */
 
 .visually-hidden {
   border: 0;
@@ -515,12 +507,6 @@ textarea.terminal-input {
   /* 1 */
 }
 
-/*
- * Extends the .visually-hidden class to allow the element
- * to be focusable when navigated to via the keyboard:
- * https://www.drupal.org/node/897638
- */
-
 .visually-hidden.focusable:active,
 .visually-hidden.focusable:focus {
   clip: auto;
@@ -532,20 +518,9 @@ textarea.terminal-input {
   width: auto;
 }
 
-/*
- * Hide visually and from screen readers, but maintain layout
- */
-
 .invisible {
   visibility: hidden;
 }
-
-/*
- * Clearfix: contain floats
- *
- * The use of `table` rather than `block` is only necessary if using
- * `::before` to contain the top-margins of child elements.
- */
 
 .clearfix::before,
 .clearfix::after {
@@ -557,28 +532,17 @@ textarea.terminal-input {
   clear: both;
 }
 
-/* ==========================================================================
-   EXAMPLE Media Queries for Responsive Design.
-   These examples override the primary ('mobile first') styles.
-   Modify as content requires.
-   ========================================================================== */
 
 @media only screen and (min-width: 35em) {
-  /* Style adjustments for viewports that meet the condition */
+  /* TODO */
 }
 
 @media print,
   (-webkit-min-device-pixel-ratio: 1.25),
   (min-resolution: 1.25dppx),
   (min-resolution: 120dpi) {
-  /* Style adjustments for high resolution devices */
+  /* TODO */
 }
-
-/* ==========================================================================
-   Print styles.
-   Inlined to avoid the additional HTTP request:
-   https://www.phpied.com/delay-loading-your-print-css/
-   ========================================================================== */
 
 @media print {
   *,
@@ -586,7 +550,7 @@ textarea.terminal-input {
   *::after {
     background: #fff !important;
     color: #000 !important;
-    /* Black prints faster */
+    
     box-shadow: none !important;
     text-shadow: none !important;
   }
@@ -604,10 +568,6 @@ textarea.terminal-input {
     content: " (" attr(title) ")";
   }
 
-  /*
-   * Don't show links that are fragment identifiers,
-   * or use the `javascript:` pseudo protocol
-   */
   a[href^="#"]::after,
   a[href^="javascript:"]::after {
     content: "";
