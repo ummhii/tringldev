@@ -36,7 +36,7 @@
           <h3 class="box-title">PINNED PROJECT</h3>
           <div class="box-content">
             <div 
-              hx-get="https://tringldev-server.fly.dev/api/pinned-repo" 
+              hx-get="https://tringldev-server.fly.dev/api/pinned-repo?repo=webp-converter-recode" 
               hx-trigger="load"
               hx-swap="innerHTML">
               <a href="#" class="terminal-link">Loading project...</a>
@@ -65,7 +65,7 @@
         <h2 class="box-title">MUSIC</h2>
         <div class="box-content">
           <div
-            hx-get="https://tringldev-server.fly.dev/api/now-playing/" 
+            hx-get="https://tringldev-server.fly.dev/api/now-playing"
             hx-trigger="load, every 15s"
             hx-swap="innerHTML"
             class="music-player">
