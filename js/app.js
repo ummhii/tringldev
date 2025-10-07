@@ -65,10 +65,12 @@ document.body.addEventListener('htmx:afterSwap', function(event) {
       
       if (data.isPlaying) {
   
+        // Placeholder SVG for when there's no album art
+        const placeholderSvg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23cba6f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath d="M9 18V5l12-2v13"%3E%3C/path%3E%3Ccircle cx="6" cy="18" r="3"%3E%3C/circle%3E%3Ccircle cx="18" cy="16" r="3"%3E%3C/circle%3E%3C/svg%3E';
 
         target.innerHTML = `
           <div class="now-playing-content">
-            ${data.albumArt ? `<img src="${data.albumArt}" alt="Album art for ${data.albumName || data.songName}" class="album-art">` : ''}
+            <img src="${data.albumArt || placeholderSvg}" alt="Album art for ${data.albumName || data.songName}" class="album-art ${!data.albumArt ? 'placeholder' : ''}">
             <div class="song-details">
               <h3 class="highlight">${data.songName}</h3>
               <p class="small">by ${data.artistName}</p>
