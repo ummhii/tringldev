@@ -3,6 +3,13 @@ import { resolve } from 'path';
 
 export default defineConfig({
   root: '.',
+  server: {
+    open: true,
+    port: 8080,
+    hmr: {
+      overlay: true,
+    },
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,
@@ -10,6 +17,9 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         404: resolve(__dirname, '404.html'),
+        blog: resolve(__dirname, 'blog.html'),
+        music: resolve(__dirname, 'music.html'),
+        projects: resolve(__dirname, 'projects.html'),
       },
     },
     // Copy assets as-is

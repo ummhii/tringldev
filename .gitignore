@@ -10,3 +10,5 @@ dist
 package-lock.json
 yarn.lock
 .env
+js/app-old.js
+css/old-style.css

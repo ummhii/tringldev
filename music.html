@@ -1,0 +1,173 @@
+<!doctype html>
+<html data-webtui-theme="catppuccin-mocha" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Last.fm Music Stats">
+  <title>trin | ~/music</title>
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/pages.css">
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.js" integrity="sha384-yWakaGAFicqusuwOYEmoRjLNOC+6OFsdmwC2lbGQaRELtuVEqNzt11c2J711DeCZ" crossorigin="anonymous"></script>
+  <meta name="htmx-config" content='{"selfRequestsOnly":false}'>
+  <script type="module" src="/js/app.js"></script>
+</head>
+<body>
+  <div class="terminal-container">
+    <header box-="round" class="terminal-box" id="header">
+      <div class="header-content">
+        <span class="prompt"><span id="terminal"></span>trinity@tringl.dev <span style="color: pink;">~/music</span> <span style="color: gray;">></span><span class="cursor">█</span></span>
+        <nav class="header-nav">
+          <a href="/">cd ~</a>
+          <a href="/music" class="accent">cd ~/music</a>
+          <a href="/projects">cd ~/projects</a>
+          <a href="/blog">cd ~/blog</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="terminal-content">
+      <!-- NOW PLAYING -->
+      <section box-="round" class="terminal-box" id="now-playing">
+        <h2 class="box-title">NOW PLAYING</h2>
+        <div class="box-content now-playing-content">
+          <div
+            hx-get="https://tringldev-server.fly.dev/api/now-playing"
+            hx-trigger="load, every 15s"
+            hx-swap="innerHTML"
+            class="music-player">
+            <div class="skeleton-box">
+              <div class="skeleton skeleton-title"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text short"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="terminal-grid">
+              <!-- TOP ARTISTS -->
+      <section box-="round" class="terminal-box" id="top-artists">
+        <h2 class="box-title">TOP ARTISTS (WEEKLY)</h2>
+        <div class="box-content">
+          <div
+            hx-get="https://tringldev-server.fly.dev/api/top-artists?limit=10"
+            hx-trigger="load"
+            hx-swap="innerHTML"
+            class="top-artists-list">
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOP ALBUMS -->
+        <section box-="round" class="terminal-box" id="top-albums">
+            <h2 class="box-title">TOP ALBUMS (WEEKLY)</h2>
+            <div class="box-content">
+            <div
+                hx-get="https://tringldev-server.fly.dev/api/top-albums?limit=10"
+                hx-trigger="load"
+                hx-swap="innerHTML"
+                class="top-albums-list">
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text"></div>
+            </div>
+            </div>
+        </section>
+      </div>
+
+        <div class="terminal-grid">
+            <!-- TOP TRACKS -->
+            <section box-="round" class="terminal-box" id="top-tracks">
+                <h2 class="box-title">TOP TRACKS (WEEKLY)</h2>
+                <div class="box-content">
+                <div
+                    hx-get="https://tringldev-server.fly.dev/api/top-tracks?limit=10"
+                    hx-trigger="load"
+                    hx-swap="innerHTML"
+                    class="top-tracks-list">
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text"></div>
+                </div>
+                </div>
+            </section>
+            <!-- RECENT TRACKS -->
+            <section box-="round" class="terminal-box" id="recent-tracks">
+                <h2 class="box-title">RECENTLY PLAYED</h2>
+                <div class="box-content">
+                <div
+                    hx-get="https://tringldev-server.fly.dev/api/recent-tracks?limit=9"
+                    hx-trigger="load, every 30s"
+                    hx-swap="innerHTML"
+                    class="recent-tracks-list">
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text"></div>
+                </div>
+                </div>
+            </section>
+        </div>
+
+      <!-- LISTENING STATS -->
+      <div class="terminal-grid">
+        <section box-="round" class="terminal-box" id="stats">
+          <h3 class="box-title">LISTENING STATS</h3>
+          <div class="box-content">
+            <div
+              hx-get="https://tringldev-server.fly.dev/api/stats"
+              hx-trigger="load"
+              hx-swap="innerHTML"
+              class="stats-content">
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+            </div>
+          </div>
+        </section>
+            <section box-="round" class="terminal-box" id="lastfm-profile">
+            <h3 class="box-title">LAST.FM PROFILE</h3>
+            <div class="box-content">
+                <a href="https://www.last.fm/user/trinity_tringl" class="terminal-link" target="_blank" rel="noopener noreferrer">
+                View my Last.fm profile →
+                </a>
+            </div>
+            </section>
+        </div>
+        <!-- FOOTER -->
+        <footer box-="round" class="terminal-box" id="footer">
+            <!-- Footer Content -->
+            <div class="box-content">
+                <p>&copy; 2024 Trinity. All rights reserved.</p>
+                <div class="footer-links">
+                <p><a href="/">~/</a></p>
+                <p><a href="/projects">~/projects</a></p>
+                <p><a href="/music">~/music</a></p>
+                <p><a href="/blog">~/blog</a></p>
+                </div>
+            </div>
+            <!-- Theme Switcher -->
+            <div class="theme-switcher">
+                <label for="theme-select" class="theme-label">Theme:</label>
+                <select id="theme-select" class="theme-select">
+                    <option value="catppuccin-mocha">Mocha</option>
+                    <option value="catppuccin-macchiato">Macchiato</option>
+                    <option value="catppuccin-frappe">Frappé</option>
+                    <option value="catppuccin-latte">Latte</option>
+                </select>
+            </div>
+        </footer>
+    </main>
+  </div>
+</body>
+</html>

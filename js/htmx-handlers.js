@@ -1,0 +1,358 @@
+import { apiCache, imageCache } from './cache.js';
+import { getTimeAgo } from './utils.js';
+
+const NOW_PLAYING_CACHE_KEY = 'now-playing-data';
+const NOW_PLAYING_TTL = 15000; // 15 seconds
+
+export function initHtmxHandlers() {
+  document.body.addEventListener('htmx:beforeRequest', handleBeforeRequest);
+  document.body.addEventListener('htmx:afterSwap', handleAfterSwap);
+  document.body.addEventListener('htmx:responseError', handleResponseError);
+}
+
+function handleBeforeRequest(event) {
+  const path = event.detail.requestConfig.path;
+  
+  // Check for cached now-playing data
+  if (path.includes('now-playing')) {
+    const cachedData = apiCache.get(NOW_PLAYING_CACHE_KEY);
+    if (cachedData) {
+      event.preventDefault();
+      const target = event.detail.target;
+      renderNowPlaying(cachedData, target);
+    }
+    return;
+  }
+  
+  if (path.includes('recent-tracks')) {
+    return;
+  }
+  
+  const cacheKey = path;
+  const cachedData = apiCache.get(cacheKey);
+  
+  if (cachedData) {
+    event.preventDefault();
+    const target = event.detail.target;
+    target.innerHTML = cachedData;
+  }
+}
+
+function handleAfterSwap(event) {
+  const target = event.detail.target;
+  const path = event.detail.requestConfig.path;
+  
+  if (path.includes('pinned-repo')) {
+    handlePinnedRepo(event, target, path);
+  } else if (path.includes('/api/repo/') && !path.includes('pinned-repo')) {
+    handleRepo(event, target, path);
+  } else if (path.includes('now-playing')) {
+    handleNowPlaying(event, target);
+  } else if (path.includes('top-artists')) {
+    handleTopArtists(event, target, path);
+  } else if (path.includes('top-albums')) {
+    handleTopAlbums(event, target, path);
+  } else if (path.includes('top-tracks')) {
+    handleTopTracks(event, target, path);
+  } else if (path.includes('recent-tracks')) {
+    handleRecentTracks(event, target);
+  } else if (path.includes('/api/stats')) {
+    handleStats(event, target, path);
+  } else if (path.includes('/api/contact')) {
+    handleContact(event);
+  } else if (path.includes('/api/latest-post')) {
+    handleLatestPost(event, target);
+  }
+}
+
+function handlePinnedRepo(event, target, path) {
+  try {
+    const data = JSON.parse(event.detail.xhr.responseText);
+    const html = `
+      <a href="${data.url}" class="terminal-link" target="_blank" rel="noopener noreferrer">
+        ${data.name}
+      </a>
+      <p class="small">${data.description || 'No description available'}</p>
+      ${data.language ? `<p class="small">Language: <span class="highlight">${data.language}</span></p>` : ''}
+      <p class="small">${data.stars || 0} stars | ${data.forks || 0} forks</p>
+      ${data.homepage ? `<p class="small"><a href="${data.homepage}" class="terminal-link" target="_blank" rel="noopener noreferrer">🔗 Homepage</a></p>` : ''}
+      ${data.topics && data.topics.length > 0 ? `<div class="repo-topics">${data.topics.map(topic => `<span class="topic-tag">${topic}</span>`).join('')}</div>` : ''}
+      ${data.updatedAt ? `<p class="small" style="color: var(--muted);">Updated: ${new Date(data.updatedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</p>` : ''}
+    `;
+    target.innerHTML = html;
+    apiCache.set(path, html);
+  } catch (e) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Failed to load project</p>`;
+  }
+}
+
+function handleRepo(event, target, path) {
+  try {
+    const data = JSON.parse(event.detail.xhr.responseText);
+    
+    const topicsHtml = data.topics && data.topics.length > 0 
+      ? `<div class="repo-topics">${data.topics.map(topic => `<span class="topic-tag">${topic}</span>`).join('')}</div>`
+      : '';
+    
+    const updatedDate = data.updatedAt ? new Date(data.updatedAt).toLocaleDateString(undefined, { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    }) : '';
+    
+    const html = `
+      <a href="${data.url}" class="terminal-link" target="_blank" rel="noopener noreferrer">
+        ${data.name}
+      </a>
+      <p class="small">${data.description || 'No description available'}</p>
+      ${data.language ? `<p class="small">Language: <span class="highlight">${data.language}</span></p>` : ''}
+      <p class="small">${data.stars || 0} stars | ${data.forks || 0} forks</p>
+      ${topicsHtml}
+      ${data.homepage ? `<p class="small"><a href="${data.homepage}" class="terminal-link" target="_blank" rel="noopener noreferrer">🔗 Homepage</a></p>` : ''}
+      ${updatedDate ? `<p class="small" style="color: var(--muted);">Updated: ${updatedDate}</p>` : ''}
+    `;
+    target.innerHTML = html;
+    apiCache.set(path, html);
+  } catch (e) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Failed to load project</p>`;
+  }
+}
+
+// Helper function to render now playing data
+async function renderNowPlaying(data, target) {
+  if (data.isPlaying) {
+    const placeholderSvg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23cba6f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath d="M9 18V5l12-2v13"%3E%3C/path%3E%3Ccircle cx="6" cy="18" r="3"%3E%3C/circle%3E%3Ccircle cx="18" cy="16" r="3"%3E%3C/circle%3E%3C/svg%3E';
+    const imageUrl = data.albumArt || placeholderSvg;
+    
+    const updateNowPlaying = (finalImageUrl) => {
+      target.innerHTML = `
+        <div class="now-playing-content">
+          <img src="${finalImageUrl}" alt="Album art for ${data.albumName || data.songName}" class="album-art ${!data.albumArt ? 'placeholder' : ''}">
+          <div class="song-details">
+            <h3 class="highlight">${data.songName}</h3>
+            <p class="small">by ${data.artistName}</p>
+            ${data.albumName ? `<p class="small">from "${data.albumName}"</p>` : ''}
+            ${data.songUrl ? `<a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">View on Last.fm →</a>` : ''}
+          </div>
+        </div>
+      `;
+    };
+    
+    if (!data.albumArt || imageUrl.startsWith('data:')) {
+      updateNowPlaying(imageUrl);
+    } else {
+      // Try to load from cache first
+      try {
+        const cachedUrl = await imageCache.load(imageUrl);
+        updateNowPlaying(cachedUrl);
+      } catch {
+        // Fallback to placeholder on error
+        target.innerHTML = `
+          <div class="now-playing-content">
+            <img src="${placeholderSvg}" alt="Album art for ${data.albumName || data.songName}" class="album-art placeholder">
+            <div class="song-details">
+              <h3 class="highlight">${data.songName}</h3>
+              <p class="small">by ${data.artistName}</p>
+              ${data.albumName ? `<p class="small">from "${data.albumName}"</p>` : ''}
+              ${data.songUrl ? `<a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">View on Last.fm →</a>` : ''}
+            </div>
+          </div>
+        `;
+      }
+    }
+  } else {
+    target.innerHTML = `<p class="small" style="color: var(--muted);">Not currently playing anything</p>`;
+  }
+}
+
+function handleNowPlaying(event, target) {
+  try {
+    const data = JSON.parse(event.detail.xhr.responseText);
+    
+    // Cache the data with TTL
+    apiCache.set(NOW_PLAYING_CACHE_KEY, data, NOW_PLAYING_TTL);
+    
+    // Render the data
+    renderNowPlaying(data, target);
+  } catch (e) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Failed to load music data</p>`;
+    apiCache.clear(NOW_PLAYING_CACHE_KEY);
+  }
+}
+
+function handleTopArtists(event, target, path) {
+  try {
+    const data = JSON.parse(event.detail.xhr.responseText);
+    
+    let html;
+    if (data.artists && data.artists.length > 0) {
+      html = data.artists.map((artist, index) => `
+        <div class="artist-item">
+          <span class="artist-rank">#${index + 1}</span>
+          <span class="artist-name">${artist.name}</span>
+          <span class="artist-plays">(${artist.playcount} plays)</span>
+        </div>
+      `).join('');
+    } else {
+      html = `<p class="small" style="color: var(--muted);">No artist data available</p>`;
+    }
+    target.innerHTML = html;
+    apiCache.set(path, html);
+  } catch (e) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Failed to load top artists</p>`;
+  }
+}
+
+function handleTopAlbums(event, target, path) {
+  try {
+    const data = JSON.parse(event.detail.xhr.responseText);
+    
+    let html;
+    if (data.albums && data.albums.length > 0) {
+      html = data.albums.map((album, index) => `
+        <div class="artist-item">
+          <span class="artist-rank">#${index + 1}</span>
+          <span class="artist-name">
+            <span class="track-name-part">${album.name} </span>
+            <span class="track-artist-part">- ${album.artist}</span>
+          </span>
+          <span class="artist-plays">(${album.playcount} plays)</span>
+        </div>
+      `).join('');
+    } else {
+      html = `<p class="small" style="color: var(--muted);">No album data available</p>`;
+    }
+    target.innerHTML = html;
+    apiCache.set(path, html);
+  } catch (e) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Failed to load top albums</p>`;
+  }
+}
+
+function handleTopTracks(event, target, path) {
+  try {
+    const data = JSON.parse(event.detail.xhr.responseText);
+    
+    let html;
+    if (data.tracks && data.tracks.length > 0) {
+      html = data.tracks.map((track, index) => `
+        <div class="artist-item">
+          <span class="artist-rank">#${index + 1}</span>
+          <span class="artist-name">
+            <span class="track-name-part">${track.name}</span>
+            <span class="track-artist-part"> - ${track.artist}</span>
+          </span>
+          <span class="artist-plays">(${track.playcount} plays)</span>
+        </div>
+      `).join('');
+    } else {
+      html = `<p class="small" style="color: var(--muted);">No track data available</p>`;
+    }
+    target.innerHTML = html;
+    apiCache.set(path, html);
+  } catch (e) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Failed to load top tracks</p>`;
+  }
+}
+
+function handleRecentTracks(event, target) {
+  try {
+    const data = JSON.parse(event.detail.xhr.responseText);
+    
+    if (data.tracks && data.tracks.length > 0) {
+      target.innerHTML = data.tracks.map((track, index) => {
+        const playedDate = track.playedAt ? new Date(track.playedAt) : null;
+        const timeAgo = playedDate ? getTimeAgo(playedDate) : '';
+        
+        return `
+          <div class="artist-item">
+            <span class="artist-rank">#${index + 1}</span>
+            <span class="artist-name">
+              <span class="track-name-part">${track.name}</span>
+              <span class="track-artist-part"> - ${track.artist}</span>
+            </span>
+            <span class="artist-plays">(${track.isPlaying ? '♫ now' : timeAgo})</span>
+          </div>
+        `;
+      }).join('');
+    } else {
+      target.innerHTML = `<p class="small" style="color: var(--muted);">No recent tracks available</p>`;
+    }
+  } catch (e) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Failed to load recent tracks</p>`;
+  }
+}
+
+function handleStats(event, target, path) {
+  try {
+    const data = JSON.parse(event.detail.xhr.responseText);
+    
+    const html = `
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-label">Total Scrobbles:</span>
+          <span class="stat-value highlight">${data.totalScrobbles || '0'}</span>
+        </div>
+      </div>
+    `;
+    target.innerHTML = html;
+    apiCache.set(path, html);
+  } catch (e) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Failed to load stats</p>`;
+  }
+}
+
+function handleContact(event) {
+  setTimeout(() => {
+    const responseDiv = document.getElementById('contact-response');
+    responseDiv.hidden = false;
+    responseDiv.innerHTML = `
+      <p style="color: var(--success);">
+        ✓ Message sent successfully! I'll get back to you soon.
+      </p>
+    `;
+    event.target.reset();
+  }, 500);
+}
+
+function handleLatestPost(event, target) {
+  try {
+    const data = JSON.parse(event.detail.xhr.responseText);
+    target.innerHTML = `
+      <a href="${data.url}" class="terminal-link" target="_blank" rel="noopener noreferrer">
+        ${data.title}
+      </a>
+      <p class="small">${new Date(data.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+    `;
+  } catch (e) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Failed to load latest post</p>`;
+  }
+}
+
+function handleResponseError(event) {
+  const target = event.detail.target;
+  const path = event.detail.requestConfig.path;
+  
+  if (path.includes('pinned-repo') || (path.includes('/api/repo/') && !path.includes('pinned-repo'))) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch project data</p>`;
+  } else if (path.includes('now-playing')) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch music data</p>`;
+    apiCache.clear(NOW_PLAYING_CACHE_KEY);
+  } else if (path.includes('top-artists')) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch top artists</p>`;
+  } else if (path.includes('top-tracks')) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch top tracks</p>`;
+  } else if (path.includes('recent-tracks')) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch recent tracks</p>`;
+  } else if (path.includes('/api/stats')) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch stats</p>`;
+  } else if (path.includes('/api/contact')) {
+    const responseDiv = document.getElementById('contact-response');
+    responseDiv.hidden = false;
+    responseDiv.innerHTML = `
+      <p style="color: var(--error);">
+        ✗ Failed to send message. Please try again later.
+      </p>
+    `;
+  }
+}

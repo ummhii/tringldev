@@ -1,0 +1,73 @@
+<!doctype html>
+<html data-webtui-theme="catppuccin-mocha" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Blog Posts">
+  <title>trin | ~/blog</title>
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/pages.css">
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.js" integrity="sha384-yWakaGAFicqusuwOYEmoRjLNOC+6OFsdmwC2lbGQaRELtuVEqNzt11c2J711DeCZ" crossorigin="anonymous"></script>
+  <meta name="htmx-config" content='{"selfRequestsOnly":false}'>
+  <script type="module" src="/js/app.js"></script>
+</head>
+<body>
+  <div class="terminal-container">
+    <header box-="round" class="terminal-box" id="header">
+      <div class="header-content">
+        <span class="prompt"><span id="terminal"></span>trinity@tringl.dev <span style="color: pink;">~/blog</span> <span style="color: gray;">></span><span class="cursor">█</span></span>
+        <nav class="header-nav">
+          <a href="/">cd ~</a>
+          <a href="/music">cd ~/music</a>
+          <a href="/projects">cd ~/projects</a>
+          <a href="/blog" class="accent">cd ~/blog</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="terminal-content">
+        <!-- LATEST POST -->
+        <section box-="round" class="terminal-box" id="latest-post">
+            <h2 class="box-title">LATEST POST</h2>
+            <div class="box-content">
+            <div 
+                hx-get="https://tringldev-server.fly.dev/api/latest-post" 
+                hx-trigger="load"
+                hx-swap="innerHTML">
+                <p class="under-construction">Currently under construction.</p>
+            </div>
+            </div>
+        </section>
+        <section box-="round" class="terminal-box" id="archive">
+            <h3 class="box-title">ARCHIVE</h3>
+            <div class="box-content">
+                <p class="under-construction">Currently under construction.</p>
+            </div>
+        </section>
+        <!-- FOOTER -->
+        <footer box-="round" class="terminal-box" id="footer">
+            <!-- Footer Content -->
+            <div class="box-content">
+                <p>&copy; 2024 Trinity. All rights reserved.</p>
+                <div class="footer-links">
+                <p><a href="/">~/</a></p>
+                <p><a href="/projects">~/projects</a></p>
+                <p><a href="/music">~/music</a></p>
+                <p><a href="/blog">~/blog</a></p>
+                </div>
+            </div>
+            <!-- Theme Switcher -->
+            <div class="theme-switcher">
+                <label for="theme-select" class="theme-label">Theme:</label>
+                <select id="theme-select" class="theme-select">
+                <option value="catppuccin-mocha">Mocha</option>
+                <option value="catppuccin-macchiato">Macchiato</option>
+                <option value="catppuccin-frappe">Frappé</option>
+                <option value="catppuccin-latte">Latte</option>
+                </select>
+            </div>
+        </footer>
+    </main>
+  </div>
+</body>
+</html>
