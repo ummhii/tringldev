@@ -383,7 +383,6 @@ body {
   color: var(--secondary);
 }
 
-
 /* ============================================
    TYPOGRAPHY & TEXT UTILITIES
    ============================================ */
@@ -553,6 +552,8 @@ textarea.terminal-input {
   text-align: center;
   position: relative;
   margin-top: auto;
+  padding-bottom: 20px;
+
 }
 
 #footer p {
@@ -564,7 +565,7 @@ textarea.terminal-input {
   gap: 15px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 #footer .footer-links a {
@@ -582,7 +583,8 @@ textarea.terminal-input {
 
 .theme-switcher {
   position: absolute;
-  top: 15px;
+  top: 50%;
+  transform: translateY(-50%);
   left: 20px;
   display: flex;
   align-items: center;

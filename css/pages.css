@@ -3,15 +3,14 @@
    ============================================ */
 
 .music-player {
-  padding: 0 20px 0 0;
   border-left: none;
+  padding-bottom: 5px;
 }
 
 .now-playing-content {
   display: flex;
   gap: 12px;
   align-items: center;
-  padding-bottom: 5px;
 }
 
 .album-art {
@@ -68,6 +67,10 @@
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.artist-item:first-child {
+  padding-top: 0;
 }
 
 .artist-item:last-child {
