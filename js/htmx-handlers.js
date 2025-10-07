@@ -64,9 +64,13 @@ function handleBeforeSwap(event) {
       const html = data.artists && data.artists.length > 0 
         ? data.artists.map((artist, index) => `
             <div class="artist-item">
-              <span class="artist-rank">#${index + 1}</span>
-              <span class="artist-name">${artist.name}</span>
-              <span class="artist-plays">(${artist.playcount} plays)</span>
+              <div class="artist-item-group-left">
+                <span class="artist-rank">#${index + 1}</span>
+                <span class="artist-name">${artist.name}</span>
+              </div>
+              <div class="artist-item-group-right">
+                <span class="artist-plays">${artist.playcount} plays</span>
+              </div>
             </div>
           `).join('')
         : `<p class="small" style="color: var(--muted);">No artist data available</p>`;
@@ -75,15 +79,21 @@ function handleBeforeSwap(event) {
       event.detail.shouldSwap = false;
     } else if (path.includes('top-albums')) {
       const data = JSON.parse(event.detail.xhr.responseText);
+      const isMobile = window.innerWidth <= 768;
+      const separator = isMobile ? '' : '- ';
       const html = data.albums && data.albums.length > 0 
         ? data.albums.map((album, index) => `
             <div class="artist-item">
-              <span class="artist-rank">#${index + 1}</span>
-              <span class="artist-name">
-                <span class="track-name-part">${album.name} </span>
-                <span class="track-artist-part">- ${album.artist}</span>
-              </span>
-              <span class="artist-plays">(${album.playcount} plays)</span>
+              <div class="artist-item-group-left">
+                <span class="artist-rank">#${index + 1}</span>
+                <span class="artist-name">
+                  <span class="track-name-part">${album.name} </span>
+                  <span class="track-artist-part">${album.artist}</span>
+                </span>
+              </div>
+              <div class="artist-item-group-right">
+                <span class="artist-plays">${album.playcount} plays</span>
+              </div>
             </div>
           `).join('')
         : `<p class="small" style="color: var(--muted);">No album data available</p>`;
@@ -92,15 +102,20 @@ function handleBeforeSwap(event) {
       event.detail.shouldSwap = false;
     } else if (path.includes('top-tracks')) {
       const data = JSON.parse(event.detail.xhr.responseText);
+      const isMobile = window.innerWidth <= 768;
       const html = data.tracks && data.tracks.length > 0 
         ? data.tracks.map((track, index) => `
             <div class="artist-item">
-              <span class="artist-rank">#${index + 1}</span>
-              <span class="artist-name">
-                <span class="track-name-part">${track.name}</span>
-                <span class="track-artist-part"> - ${track.artist}</span>
-              </span>
-              <span class="artist-plays">(${track.playcount} plays)</span>
+              <div class="artist-item-group-left">
+                <span class="artist-rank">#${index + 1}</span>
+                <span class="artist-name">
+                  <span class="track-name-part">${track.name}</span>
+                  <span class="track-artist-part">${track.artist}</span>
+                </span>
+              </div>
+              <div class="artist-item-group-right">
+                <span class="artist-plays">${track.playcount} plays</span>
+              </div>
             </div>
           `).join('')
         : `<p class="small" style="color: var(--muted);">No track data available</p>`;
@@ -109,18 +124,25 @@ function handleBeforeSwap(event) {
       event.detail.shouldSwap = false;
     } else if (path.includes('recent-tracks')) {
       const data = JSON.parse(event.detail.xhr.responseText);
+      const isMobile = window.innerWidth <= 768;
       const html = data.tracks && data.tracks.length > 0
         ? data.tracks.map((track, index) => {
             const playedDate = track.playedAt ? new Date(track.playedAt) : null;
             const timeAgo = playedDate ? getTimeAgo(playedDate) : '';
+            const nowPlayingClass = track.isPlaying ? ' now-playing' : '';
+            const audioBars = track.isPlaying ? '<span class="audio-bars"><span></span><span></span><span></span></span>' : '';
             return `
-              <div class="artist-item">
-                <span class="artist-rank">#${index + 1}</span>
-                <span class="artist-name">
-                  <span class="track-name-part">${track.name}</span>
-                  <span class="track-artist-part"> - ${track.artist}</span>
-                </span>
-                <span class="artist-plays">(${track.isPlaying ? '♫ now' : timeAgo})</span>
+              <div class="artist-item${nowPlayingClass}">
+                <div class="artist-item-group-left">
+                  <span class="artist-rank">#${index + 1}</span>
+                  <span class="artist-name">
+                    <span class="track-name-part">${track.name}</span>
+                    <span class="track-artist-part">${track.artist}</span>
+                  </span>
+                </div>
+                <div class="artist-item-group-right">
+                  <span class="artist-plays">${track.isPlaying ? audioBars + 'listening' : timeAgo}</span>
+                </div>
               </div>
             `;
           }).join('')

@@ -15,8 +15,13 @@
   <div class="terminal-container">
     <header box-="round" class="terminal-box" id="header">
       <div class="header-content">
+        <button class="hamburger-menu" id="hamburger-menu" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
         <span class="prompt"><span id="terminal"></span>trinity@tringl.dev <span style="color: pink;">~</span> <span style="color: gray;">></span><span class="cursor">█</span></span>
-        <nav class="header-nav">
+        <nav class="header-nav" id="header-nav">
           <a href="/" class="accent">~</a>
           <a href="/music">~/music</a>
           <a href="/projects">~/projects</a>
@@ -37,7 +42,7 @@
           <p class="accent">&gt; Explore my projects and writings below!</p>
         </div>
       </section>
-      
+
       <!-- TWO COLUMN LAYOUT -->
       <div class="terminal-grid">
         <!-- PINNED PROJECT -->
@@ -89,7 +94,7 @@
 
         <!-- TOP ARTISTS -->
         <section box-="round" class="terminal-box" id="top-artists">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="box-title-multiple">
             <h3 class="box-title">TOP ARTISTS</h3>
             <h3 class="box-title">WEEKLY</h3>
           </div>
