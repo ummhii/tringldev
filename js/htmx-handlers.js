@@ -257,7 +257,7 @@ function handleBeforeRequest(event) {
 }
 
 async function renderNowPlaying(data, target) {
-  const audioBars = document.getElementById('index-audio-bars');
+  const audioBars = document.getElementById('index-audio-bars') || document.getElementById('music-audio-bars');
   
   if (data.isPlaying) {
     if (audioBars) {
