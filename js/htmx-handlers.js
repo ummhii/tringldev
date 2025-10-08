@@ -161,8 +161,15 @@ function handleBeforeSwap(event) {
     } else if (path.includes('recent-tracks')) {
       const data = JSON.parse(xhr.responseText);
       const isMobile = window.innerWidth <= 768;
-      const html = data.tracks && data.tracks.length > 0
-        ? data.tracks.map((track, index) => {
+
+      const hasNowPlaying = data.tracks && data.tracks.some(track => track.isPlaying);
+
+      const tracksToDisplay = data.tracks && data.tracks.length > 0
+        ? (hasNowPlaying ? data.tracks.slice(0, 10) : data.tracks)
+          : [];
+
+        const html = tracksToDisplay.length > 0
+          ? tracksToDisplay.map((track, index) => {
             const playedDate = track.playedAt ? new Date(track.playedAt) : null;
             const timeAgo = playedDate ? getTimeAgo(playedDate) : '';
             const nowPlayingClass = track.isPlaying ? ' now-playing' : '';
