@@ -32,44 +32,47 @@
     </header>
 
     <main class="terminal-content">
-        <!-- LATEST POST -->
-        <section box-="round" class="terminal-box" id="latest-post">
-            <h2 class="box-title">LATEST POST</h2>
-            <div class="box-content">
-            <div 
-                hx-get="https://tringldev-server.fly.dev/api/latest-post" 
-                hx-trigger="load"
-                hx-swap="innerHTML">
-                <p class="under-construction">Currently under construction.</p>
-            </div>
-            </div>
-        </section>
-        <section box-="round" class="terminal-box" id="archive">
-            <h3 class="box-title">ARCHIVE</h3>
-            <div class="box-content">
-                <p class="under-construction">Currently under construction.</p>
-            </div>
-        </section>
-        <!-- FOOTER -->
-        <footer box-="round" class="terminal-box" id="footer">
-            <!-- Footer Content -->
-            <div class="box-content">
-                <p>&copy; 2024 Trinity. All rights reserved.</p>
-                <div class="footer-links">
-                <p><a href="/">~</a> | <a href="/projects">~/projects</a> | <a href="/music">~/music</a> | <a href="/blog">~/blog</a></p>
-                </div>
-            </div>
-            <!-- Theme Switcher -->
-            <div class="theme-switcher">
-                <label for="theme-select" class="theme-label">Theme:</label>
-                <select id="theme-select" class="theme-select">
-                  <option value="catppuccin-mocha">🌿 Mocha</option>
-                  <option value="catppuccin-macchiato">🌺 Macchiato</option>
-                  <option value="catppuccin-frappe">🪴 Frappé</option>
-                  <option value="catppuccin-latte">🌻 Latte</option>
-                </select>
-            </div>
-        </footer>
+      <!-- LATEST POST -->
+      <section box-="round" class="terminal-box" id="latest-post">
+        <h2 class="box-title">LATEST POST</h2>
+        <div class="box-content">
+          <div
+            hx-get="https://tringldev-server.fly.dev/api/latest-post"
+            hx-trigger="load"
+            hx-swap="innerHTML">
+            <p class="under-construction">Currently under construction.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ARCHIVE -->
+      <section box-="round" class="terminal-box" id="archive">
+        <h3 class="box-title">ARCHIVE</h3>
+        <div class="box-content">
+          <p class="under-construction">Currently under construction.</p>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer box-="round" class="terminal-box" id="footer">
+        <!-- Footer Content -->
+        <div class="box-content">
+          <p>&copy; 2024 Trinity. All rights reserved.</p>
+          <div class="footer-links">
+            <p><a href="/">~</a> | <a href="/projects">~/projects</a> | <a href="/music">~/music</a> | <a href="/blog">~/blog</a></p>
+          </div>
+        </div>
+        <!-- Theme Switcher -->
+        <div class="theme-switcher">
+          <label for="theme-select" class="theme-label">Theme:</label>
+          <select id="theme-select" class="theme-select">
+            <option value="catppuccin-mocha">🌿 Mocha</option>
+            <option value="catppuccin-macchiato">🌺 Macchiato</option>
+            <option value="catppuccin-frappe">🪴 Frappé</option>
+            <option value="catppuccin-latte">🌻 Latte</option>
+          </select>
+        </div>
+      </footer>
     </main>
   </div>
 </body>

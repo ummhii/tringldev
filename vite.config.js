@@ -4,7 +4,7 @@ import { resolve } from 'path';
 export default defineConfig({
   root: '.',
   server: {
-    open: true,
+    open: false,
     port: 8080,
     hmr: false, // Disable hot module replacement
   },

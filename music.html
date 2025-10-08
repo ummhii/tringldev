@@ -53,97 +53,98 @@
       </section>
 
       <div class="terminal-grid">
-              <!-- TOP ARTISTS -->
-      <section box-="round" class="terminal-box" id="top-artists">
-        <div class="box-title-multiple">
-          <h2 class="box-title">TOP ARTISTS</h2>
-          <div class="period-selector" data-list-type="artists">
-            <span btn-="primary" class="period-btn" data-period="7day">WEEKLY</span>
-            <span btn-="primary" class="period-btn" data-period="1month">MONTHLY</span>
-            <span btn-="primary" class="period-btn" data-period="12month">YEARLY</span>
-            <span btn-="primary" class="period-btn" data-period="overall">ALLTIME</span>
-          </div>
-        </div>
-        <div class="box-content">
-          <div
-            id="top-artists-content"
-            class="top-artists-list">
-            <div class="skeleton skeleton-text"></div>
-            <div class="skeleton skeleton-text"></div>
-            <div class="skeleton skeleton-text"></div>
-            <div class="skeleton skeleton-text"></div>
-            <div class="skeleton skeleton-text"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TOP ALBUMS -->
-        <section box-="round" class="terminal-box" id="top-albums">
-            <div class="box-title-multiple">
-              <h2 class="box-title">TOP ALBUMS</h2>
-              <div class="period-selector" data-list-type="albums">
-                <span btn-="primary" class="period-btn" data-period="7day">WEEKLY</span>
-                <span btn-="primary" class="period-btn" data-period="1month">MONTHLY</span>
-                <span btn-="primary" class="period-btn" data-period="12month">YEARLY</span>
-                <span btn-="primary" class="period-btn" data-period="overall">ALLTIME</span>
-              </div>
+        <!-- TOP ARTISTS -->
+        <section box-="round" class="terminal-box" id="top-artists">
+          <div class="box-title-multiple">
+            <h2 class="box-title">TOP ARTISTS</h2>
+            <div class="period-selector" data-list-type="artists">
+              <span btn-="primary" class="period-btn" data-period="7day">WEEKLY</span>
+              <span btn-="primary" class="period-btn" data-period="1month">MONTHLY</span>
+              <span btn-="primary" class="period-btn" data-period="12month">YEARLY</span>
+              <span btn-="primary" class="period-btn" data-period="overall">ALLTIME</span>
             </div>
-            <div class="box-content">
+          </div>
+          <div class="box-content">
             <div
-                id="top-albums-content"
-                class="top-albums-list">
-                <div class="skeleton skeleton-text"></div>
-                <div class="skeleton skeleton-text"></div>
-                <div class="skeleton skeleton-text"></div>
-                <div class="skeleton skeleton-text"></div>
-                <div class="skeleton skeleton-text"></div>
+              id="top-artists-content"
+              class="top-artists-list">
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
             </div>
+          </div>
+        </section>
+
+        <!-- TOP ALBUMS -->
+        <section box-="round" class="terminal-box" id="top-albums">
+          <div class="box-title-multiple">
+            <h2 class="box-title">TOP ALBUMS</h2>
+            <div class="period-selector" data-list-type="albums">
+              <span btn-="primary" class="period-btn" data-period="7day">WEEKLY</span>
+              <span btn-="primary" class="period-btn" data-period="1month">MONTHLY</span>
+              <span btn-="primary" class="period-btn" data-period="12month">YEARLY</span>
+              <span btn-="primary" class="period-btn" data-period="overall">ALLTIME</span>
             </div>
+          </div>
+          <div class="box-content">
+            <div
+              id="top-albums-content"
+              class="top-albums-list">
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+            </div>
+          </div>
         </section>
       </div>
 
-        <div class="terminal-grid">
-            <!-- TOP TRACKS -->
-            <section box-="round" class="terminal-box" id="top-tracks">
-                <div class="box-title-multiple">
-                  <h2 class="box-title">TOP TRACKS</h2>
-                  <div class="period-selector" data-list-type="tracks">
-                    <span btn-="primary" class="period-btn" data-period="7day">WEEKLY</span>
-                    <span btn-="primary" class="period-btn" data-period="1month">MONTHLY</span>
-                    <span btn-="primary" class="period-btn" data-period="12month">YEARLY</span>
-                    <span btn-="primary" class="period-btn" data-period="overall">ALLTIME</span>
-                  </div>
-                </div>
-                <div class="box-content">
-                <div
-                    id="top-tracks-content"
-                    class="top-tracks-list">
-                    <div class="skeleton skeleton-text"></div>
-                    <div class="skeleton skeleton-text"></div>
-                    <div class="skeleton skeleton-text"></div>
-                    <div class="skeleton skeleton-text"></div>
-                    <div class="skeleton skeleton-text"></div>
-                </div>
-                </div>
-            </section>
-            <!-- RECENT TRACKS -->
-            <section box-="round" class="terminal-box" id="recent-tracks">
-                <h2 class="box-title">RECENTLY PLAYED</h2>
-                <div class="box-content">
-                <div
-                    hx-get="https://tringldev-server.fly.dev/api/recent-tracks?limit=9"
-                    hx-trigger="load, every 30s"
-                    hx-swap="innerHTML"
-                    class="recent-tracks-list">
-                    <div class="skeleton skeleton-text"></div>
-                    <div class="skeleton skeleton-text"></div>
-                    <div class="skeleton skeleton-text"></div>
-                    <div class="skeleton skeleton-text"></div>
-                    <div class="skeleton skeleton-text"></div>
-                </div>
-                </div>
-            </section>
-        </div>
+      <div class="terminal-grid">
+        <!-- TOP TRACKS -->
+        <section box-="round" class="terminal-box" id="top-tracks">
+          <div class="box-title-multiple">
+            <h2 class="box-title">TOP TRACKS</h2>
+            <div class="period-selector" data-list-type="tracks">
+              <span btn-="primary" class="period-btn" data-period="7day">WEEKLY</span>
+              <span btn-="primary" class="period-btn" data-period="1month">MONTHLY</span>
+              <span btn-="primary" class="period-btn" data-period="12month">YEARLY</span>
+              <span btn-="primary" class="period-btn" data-period="overall">ALLTIME</span>
+            </div>
+          </div>
+          <div class="box-content">
+            <div
+              id="top-tracks-content"
+              class="top-tracks-list">
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RECENT TRACKS -->
+        <section box-="round" class="terminal-box" id="recent-tracks">
+          <h2 class="box-title">RECENTLY PLAYED</h2>
+          <div class="box-content">
+            <div
+              hx-get="https://tringldev-server.fly.dev/api/recent-tracks?limit=9"
+              hx-trigger="load, every 30s"
+              hx-swap="innerHTML"
+              class="recent-tracks-list">
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text"></div>
+            </div>
+          </div>
+        </section>
+      </div>
 
       <!-- LISTENING STATS -->
       <div class="terminal-grid">
@@ -161,35 +162,37 @@
             </div>
           </div>
         </section>
-            <section box-="round" class="terminal-box" id="lastfm-profile">
-            <h3 class="box-title">LAST.FM PROFILE</h3>
-            <div class="box-content profile-content">
-                <a href="https://www.last.fm/user/trinity_tringl" class="terminal-link" target="_blank" rel="noopener noreferrer">
-                View my Last.fm profile →
-                </a>
-            </div>
-            </section>
+
+        <section box-="round" class="terminal-box" id="lastfm-profile">
+          <h3 class="box-title">LAST.FM PROFILE</h3>
+          <div class="box-content profile-content">
+            <a href="https://www.last.fm/user/trinity_tringl" class="terminal-link" target="_blank" rel="noopener noreferrer">
+              View my Last.fm profile →
+            </a>
+          </div>
+        </section>
+      </div>
+
+      <!-- FOOTER -->
+      <footer box-="round" class="terminal-box" id="footer">
+        <!-- Footer Content -->
+        <div class="box-content">
+          <p>&copy; 2024 Trinity. All rights reserved.</p>
+          <div class="footer-links">
+            <p><a href="/">~</a> | <a href="/projects">~/projects</a> | <a href="/music">~/music</a> | <a href="/blog">~/blog</a></p>
+          </div>
         </div>
-        <!-- FOOTER -->
-        <footer box-="round" class="terminal-box" id="footer">
-            <!-- Footer Content -->
-            <div class="box-content">
-                <p>&copy; 2024 Trinity. All rights reserved.</p>
-                <div class="footer-links">
-                <p><a href="/">~</a> | <a href="/projects">~/projects</a> | <a href="/music">~/music</a> | <a href="/blog">~/blog</a></p>
-                </div>
-            </div>
-            <!-- Theme Switcher -->
-            <div class="theme-switcher">
-                <label for="theme-select" class="theme-label">Theme:</label>
-                <select id="theme-select" class="theme-select">
-                    <option value="catppuccin-mocha">🌿 Mocha</option>
-                    <option value="catppuccin-macchiato">🌺 Macchiato</option>
-                    <option value="catppuccin-frappe">🪴 Frappé</option>
-                    <option value="catppuccin-latte">🌻 Latte</option>
-                </select>
-            </div>
-        </footer>
+        <!-- Theme Switcher -->
+        <div class="theme-switcher">
+          <label for="theme-select" class="theme-label">Theme:</label>
+          <select id="theme-select" class="theme-select">
+            <option value="catppuccin-mocha">🌿 Mocha</option>
+            <option value="catppuccin-macchiato">🌺 Macchiato</option>
+            <option value="catppuccin-frappe">🪴 Frappé</option>
+            <option value="catppuccin-latte">🌻 Latte</option>
+          </select>
+        </div>
+      </footer>
     </main>
   </div>
 </body>
