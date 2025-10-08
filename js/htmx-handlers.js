@@ -3,19 +3,47 @@ import { getTimeAgo } from './utils.js';
 
 const NOW_PLAYING_CACHE_KEY = 'now-playing-data';
 const NOW_PLAYING_TTL = 15000; // 15 seconds
+const MUSIC_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function storeMusicData(type, period, html) {
+  try {
+    const key = `lastfm-${type}-${period}`;
+    const data = {
+      html: html,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(key, JSON.stringify(data));
+    console.log(`Stored ${type} data for period ${period}, key: ${key}`);
+  } catch (e) {
+    console.warn('Failed to cache music data:', e);
+  }
+}
 
 export function initHtmxHandlers() {
   document.body.addEventListener('htmx:beforeRequest', handleBeforeRequest);
   document.body.addEventListener('htmx:beforeSwap', handleBeforeSwap);
   document.body.addEventListener('htmx:responseError', handleResponseError);
+  
+  document.body.addEventListener('htmx:afterRequest', (event) => {
+    if (event.detail.requestConfig.path.includes('top-albums')) {
+      console.log('Albums afterRequest:', event.detail);
+    }
+  });
+  
+  document.body.addEventListener('htmx:afterSwap', (event) => {
+    if (event.detail.requestConfig.path.includes('top-albums')) {
+      console.log('Albums afterSwap:', event.detail);
+    }
+  });
 }
 
 function handleBeforeSwap(event) {
   const path = event.detail.requestConfig.path;
   const target = event.detail.target;
   
+  const cacheKey = path;
+  
   try {
-    // Process JSON responses - set innerHTML and prevent default swap
     if (path.includes('pinned-repo')) {
       const data = JSON.parse(event.detail.xhr.responseText);
       const html = `
@@ -25,12 +53,12 @@ function handleBeforeSwap(event) {
         <p class="small">${data.description || 'No description available'}</p>
         ${data.language ? `<p class="small">Language: <span class="highlight">${data.language}</span></p>` : ''}
         <p class="small">${data.stars || 0} stars | ${data.forks || 0} forks</p>
-        ${data.homepage ? `<p class="small"><a href="${data.homepage}" class="terminal-link" target="_blank" rel="noopener noreferrer">🔗 Homepage</a></p>` : ''}
+        ${data.homepage ? `<p class="small"><a href="${data.homepage}" class="terminal-link" target="_blank" rel="noopener noreferrer">Homepage</a></p>` : ''}
         ${data.topics && data.topics.length > 0 ? `<div class="repo-topics">${data.topics.map(topic => `<span class="topic-tag">${topic}</span>`).join('')}</div>` : ''}
         ${data.updatedAt ? `<p class="small" style="color: var(--muted);">Updated: ${new Date(data.updatedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</p>` : ''}
       `;
       target.innerHTML = html;
-      apiCache.set(path, html);
+      apiCache.set(cacheKey, html);
       event.detail.shouldSwap = false;
     } else if (path.includes('/api/repo/') && !path.includes('pinned-repo')) {
       const data = JSON.parse(event.detail.xhr.responseText);
@@ -50,11 +78,11 @@ function handleBeforeSwap(event) {
         ${data.language ? `<p class="small">Language: <span class="highlight">${data.language}</span></p>` : ''}
         <p class="small">${data.stars || 0} stars | ${data.forks || 0} forks</p>
         ${topicsHtml}
-        ${data.homepage ? `<p class="small"><a href="${data.homepage}" class="terminal-link" target="_blank" rel="noopener noreferrer">🔗 Homepage</a></p>` : ''}
+        ${data.homepage ? `<p class="small"><a href="${data.homepage}" class="terminal-link" target="_blank" rel="noopener noreferrer">Homepage</a></p>` : ''}
         ${updatedDate ? `<p class="small" style="color: var(--muted);">Updated: ${updatedDate}</p>` : ''}
       `;
       target.innerHTML = html;
-      apiCache.set(path, html);
+      apiCache.set(cacheKey, html);
       event.detail.shouldSwap = false;
     } else if (path.includes('now-playing')) {
       processNowPlaying(event, target);
@@ -75,10 +103,17 @@ function handleBeforeSwap(event) {
           `).join('')
         : `<p class="small" style="color: var(--muted);">No artist data available</p>`;
       target.innerHTML = html;
-      apiCache.set(path, html);
+      
+      const periodMatch = path.match(/period=([^&]+)/);
+      if (periodMatch) {
+        storeMusicData('artists', periodMatch[1], html);
+      }
+      
       event.detail.shouldSwap = false;
     } else if (path.includes('top-albums')) {
+      console.log('Processing top-albums response');
       const data = JSON.parse(event.detail.xhr.responseText);
+      console.log('Albums data:', data);
       const isMobile = window.innerWidth <= 768;
       const separator = isMobile ? '' : '- ';
       const html = data.albums && data.albums.length > 0 
@@ -97,10 +132,20 @@ function handleBeforeSwap(event) {
             </div>
           `).join('')
         : `<p class="small" style="color: var(--muted);">No album data available</p>`;
+      console.log('Generated HTML length:', html.length);
+      console.log('Target element:', target);
       target.innerHTML = html;
-      apiCache.set(path, html);
+      console.log('Set innerHTML complete');
+      
+      const periodMatch = path.match(/period=([^&]+)/);
+      if (periodMatch) {
+        console.log('Storing albums with period:', periodMatch[1]);
+        storeMusicData('albums', periodMatch[1], html);
+      }
+      
       event.detail.shouldSwap = false;
-    } else if (path.includes('top-tracks')) {
+    } 
+    else if (path.includes('top-tracks')) {
       const data = JSON.parse(event.detail.xhr.responseText);
       const isMobile = window.innerWidth <= 768;
       const html = data.tracks && data.tracks.length > 0 
@@ -120,7 +165,12 @@ function handleBeforeSwap(event) {
           `).join('')
         : `<p class="small" style="color: var(--muted);">No track data available</p>`;
       target.innerHTML = html;
-      apiCache.set(path, html);
+      
+      const periodMatch = path.match(/period=([^&]+)/);
+      if (periodMatch) {
+        storeMusicData('tracks', periodMatch[1], html);
+      }
+      
       event.detail.shouldSwap = false;
     } else if (path.includes('recent-tracks')) {
       const data = JSON.parse(event.detail.xhr.responseText);
@@ -148,6 +198,7 @@ function handleBeforeSwap(event) {
           }).join('')
         : `<p class="small" style="color: var(--muted);">No recent tracks available</p>`;
       target.innerHTML = html;
+      apiCache.set(cacheKey, html);
       event.detail.shouldSwap = false;
     } else if (path.includes('/api/stats')) {
       const data = JSON.parse(event.detail.xhr.responseText);
@@ -198,6 +249,10 @@ function handleBeforeRequest(event) {
     return;
   }
   
+  if (path.includes('top-artists') || path.includes('top-albums') || path.includes('top-tracks')) {
+    return;
+  }
+  
   const cacheKey = path;
   const cachedData = apiCache.get(cacheKey);
   
@@ -209,7 +264,13 @@ function handleBeforeRequest(event) {
 }
 
 async function renderNowPlaying(data, target) {
+  const audioBars = document.getElementById('index-audio-bars');
+  
   if (data.isPlaying) {
+    if (audioBars) {
+      audioBars.style.display = 'inline-flex';
+    }
+    
     const placeholderSvg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23cba6f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath d="M9 18V5l12-2v13"%3E%3C/path%3E%3Ccircle cx="6" cy="18" r="3"%3E%3C/circle%3E%3Ccircle cx="18" cy="16" r="3"%3E%3C/circle%3E%3C/svg%3E';
     const imageUrl = data.albumArt || placeholderSvg;
     
@@ -248,6 +309,10 @@ async function renderNowPlaying(data, target) {
       }
     }
   } else {
+    if (audioBars) {
+      audioBars.style.display = 'none';
+    }
+    
     target.innerHTML = `<p class="small" style="color: var(--muted);">Not currently playing anything</p>`;
   }
 }
@@ -289,6 +354,8 @@ function handleResponseError(event) {
     apiCache.clear(NOW_PLAYING_CACHE_KEY);
   } else if (path.includes('top-artists')) {
     target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch top artists</p>`;
+  } else if (path.includes('top-albums')) {
+    target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch top albums</p>`;
   } else if (path.includes('top-tracks')) {
     target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch top tracks</p>`;
   } else if (path.includes('recent-tracks')) {

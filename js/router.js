@@ -1,3 +1,5 @@
+import { initMusicPeriodSelector } from './music-period-selector.js';
+
 export function initRouter() {
   const loadingOverlay = document.createElement('div');
   loadingOverlay.className = 'page-loading';
@@ -56,7 +58,6 @@ async function loadPage(path, animate = true) {
     const newHeader = doc.querySelector('header#header');
     const newTitle = doc.querySelector('title');
 
-    // Replace main content
     if (newMain) {
       const currentMain = document.querySelector('main.terminal-content');
       if (currentMain) {
@@ -98,45 +99,50 @@ async function loadPage(path, animate = true) {
         if (mainContent) {
           window.htmx.process(mainContent);
           
+          const isMusicPage = document.querySelector('.period-selector');
+          
           const loadElements = mainContent.querySelectorAll('[hx-trigger]');
           loadElements.forEach(el => {
             const trigger = el.getAttribute('hx-trigger');
-            if (trigger && trigger.includes('load')) {
+            const isMusicList = el.id === 'top-artists-content' || 
+                               el.id === 'top-albums-content' || 
+                               el.id === 'top-tracks-content';
+            
+            if (trigger && trigger.includes('load') && !(isMusicPage && isMusicList)) {
               window.htmx.trigger(el, 'load');
             }
           });
+          
+          if (isMusicPage) {
+            initMusicPeriodSelector();
+          }
         }
       }, 0);
     }
 
     if (animate) {
-      // Fade in main content first
       const mainContent = document.querySelector('main.terminal-content');
       if (mainContent) {
         mainContent.style.opacity = '1';
         mainContent.style.transition = 'opacity 0.3s ease';
       }
       
-      // Stagger fade-in for terminal boxes inside main content only (exclude header and footer)
       const newBoxes = mainContent ? mainContent.querySelectorAll('.terminal-box:not(#header):not(#footer)') : [];
       newBoxes.forEach((box, index) => {
-        // Set initial state
         box.style.opacity = '0';
         box.style.transform = 'translateY(10px)';
         
-        // Animate in with delay
         setTimeout(() => {
           box.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
           box.style.opacity = '1';
           box.style.transform = 'translateY(0)';
           
-          // Clean up inline styles after animation completes
           setTimeout(() => {
             box.style.removeProperty('opacity');
             box.style.removeProperty('transform');
             box.style.removeProperty('transition');
           }, 400);
-        }, 50 + (index * 50)); // Stagger by 50ms per box
+        }, 50 + (index * 50));
       });
     }
 
