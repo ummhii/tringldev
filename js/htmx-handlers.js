@@ -27,12 +27,17 @@ export function initHtmxHandlers() {
 function handleBeforeSwap(event) {
   const path = event.detail.requestConfig.path;
   const target = event.detail.target;
+  const xhr = event.detail.xhr;
   
   const cacheKey = path;
   
+  if (!xhr.responseText || xhr.status !== 200) {
+    return;
+  }
+  
   try {
     if (path.includes('pinned-repo')) {
-      const data = JSON.parse(event.detail.xhr.responseText);
+      const data = JSON.parse(xhr.responseText);
       const html = `
         <a href="${data.url}" class="terminal-link" target="_blank" rel="noopener noreferrer">
           ${data.name}
@@ -48,7 +53,7 @@ function handleBeforeSwap(event) {
       apiCache.set(cacheKey, html);
       event.detail.shouldSwap = false;
     } else if (path.includes('/api/repo/') && !path.includes('pinned-repo')) {
-      const data = JSON.parse(event.detail.xhr.responseText);
+      const data = JSON.parse(xhr.responseText);
       const topicsHtml = data.topics && data.topics.length > 0 
         ? `<div class="repo-topics">${data.topics.map(topic => `<span class="topic-tag">${topic}</span>`).join('')}</div>`
         : '';
@@ -75,7 +80,7 @@ function handleBeforeSwap(event) {
       processNowPlaying(event, target);
       event.detail.shouldSwap = false;
     } else if (path.includes('top-artists')) {
-      const data = JSON.parse(event.detail.xhr.responseText);
+      const data = JSON.parse(xhr.responseText);
       const html = data.artists && data.artists.length > 0 
         ? data.artists.map((artist, index) => `
             <div class="artist-item">
@@ -98,7 +103,7 @@ function handleBeforeSwap(event) {
       
       event.detail.shouldSwap = false;
     } else if (path.includes('top-albums')) {
-      const data = JSON.parse(event.detail.xhr.responseText);
+      const data = JSON.parse(xhr.responseText);
       const isMobile = window.innerWidth <= 768;
       const separator = isMobile ? '' : '- ';
       const html = data.albums && data.albums.length > 0 
@@ -127,7 +132,7 @@ function handleBeforeSwap(event) {
       event.detail.shouldSwap = false;
     } 
     else if (path.includes('top-tracks')) {
-      const data = JSON.parse(event.detail.xhr.responseText);
+      const data = JSON.parse(xhr.responseText);
       const isMobile = window.innerWidth <= 768;
       const html = data.tracks && data.tracks.length > 0 
         ? data.tracks.map((track, index) => `
@@ -154,7 +159,7 @@ function handleBeforeSwap(event) {
       
       event.detail.shouldSwap = false;
     } else if (path.includes('recent-tracks')) {
-      const data = JSON.parse(event.detail.xhr.responseText);
+      const data = JSON.parse(xhr.responseText);
       const isMobile = window.innerWidth <= 768;
       const html = data.tracks && data.tracks.length > 0
         ? data.tracks.map((track, index) => {
@@ -182,7 +187,7 @@ function handleBeforeSwap(event) {
       apiCache.set(cacheKey, html);
       event.detail.shouldSwap = false;
     } else if (path.includes('/api/stats')) {
-      const data = JSON.parse(event.detail.xhr.responseText);
+      const data = JSON.parse(xhr.responseText);
       const html = `
         <div class="stats-grid">
           <div class="stat-item">
@@ -195,7 +200,7 @@ function handleBeforeSwap(event) {
       apiCache.set(path, html);
       event.detail.shouldSwap = false;
     } else if (path.includes('/api/latest-post')) {
-      const data = JSON.parse(event.detail.xhr.responseText);
+      const data = JSON.parse(xhr.responseText);
       const html = `
         <a href="${data.url}" class="terminal-link" target="_blank" rel="noopener noreferrer">
           ${data.title}
