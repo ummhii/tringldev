@@ -269,13 +269,41 @@ async function renderNowPlaying(data, target) {
     
     const updateNowPlaying = (finalImageUrl) => {
       target.innerHTML = `
-        <div class="now-playing-content">
-          <img src="${finalImageUrl}" alt="Album art for ${data.albumName || data.songName}" class="album-art ${!data.albumArt ? 'placeholder' : ''}">
-          <div class="song-details">
-            <h3 class="highlight">${data.songName}</h3>
-            <p class="small">by ${data.artistName}</p>
-            ${data.albumName ? `<p class="small">from "${data.albumName}"</p>` : ''}
-            ${data.songUrl ? `<a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">View on Last.fm →</a>` : ''}
+        <div class="music-playing-state">
+          <div class="terminal-prompt-line">
+            <span class="prompt-symbol">$</span>
+            <span class="prompt-command">music_player --now-playing</span>
+          </div>
+          <div class="terminal-output playing">
+            <div class="output-line">
+              <span class="output-label">STATUS:</span>
+              <span class="output-value playing">
+                PLAYING
+              </span>
+            </div>
+            <div class="output-line">
+              <span class="output-label">TRACK:</span>
+              <span class="output-value highlight-value">${data.songName}</span>
+            </div>
+            <div class="output-line">
+              <span class="output-label">ARTIST:</span>
+              <span class="output-value">${data.artistName}</span>
+            </div>
+            ${data.albumName ? `
+            <div class="output-line">
+              <span class="output-label">ALBUM:</span>
+              <span class="output-value">${data.albumName}</span>
+            </div>
+            ` : ''}
+            ${data.songUrl ? `
+            <div class="output-line terminal-link-line">
+              <span class="output-label">URL:</span>
+              <a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">${data.songUrl}</a>
+            </div>
+            ` : ''}
+          </div>
+          <div class="album-art-container">
+            <img src="${finalImageUrl}" alt="Album art for ${data.albumName || data.songName}" class="album-art ${!data.albumArt ? 'placeholder' : ''}">
           </div>
         </div>
       `;
@@ -288,17 +316,8 @@ async function renderNowPlaying(data, target) {
         const cachedUrl = await imageCache.load(imageUrl);
         updateNowPlaying(cachedUrl);
       } catch {
-        target.innerHTML = `
-          <div class="now-playing-content">
-            <img src="${placeholderSvg}" alt="Album art for ${data.albumName || data.songName}" class="album-art placeholder">
-            <div class="song-details">
-              <h3 class="highlight">${data.songName}</h3>
-              <p class="small">by ${data.artistName}</p>
-              ${data.albumName ? `<p class="small">from "${data.albumName}"</p>` : ''}
-              ${data.songUrl ? `<a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">View on Last.fm →</a>` : ''}
-            </div>
-          </div>
-        `;
+        const placeholderSvg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23cba6f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath d="M9 18V5l12-2v13"%3E%3C/path%3E%3Ccircle cx="6" cy="18" r="3"%3E%3C/circle%3E%3Ccircle cx="18" cy="16" r="3"%3E%3C/circle%3E%3C/svg%3E';
+        updateNowPlaying(placeholderSvg);
       }
     }
   } else {
@@ -306,7 +325,23 @@ async function renderNowPlaying(data, target) {
       audioBars.style.display = 'none';
     }
     
-    target.innerHTML = `<p class="small" style="color: var(--muted);">Not currently playing anything</p>`;
+    target.innerHTML = `
+      <div class="music-idle-state">
+        <div class="terminal-prompt-line">
+          <span class="prompt-symbol">$</span>
+          <span class="prompt-command">music_player --status</span>
+        </div>
+        <div class="terminal-output">
+          <span class="output-line"><span class="output-label">STATUS:</span> <span class="output-value idle">IDLE</span></span>
+          <span class="output-line"><span class="output-label">PLAYER:</span> <span class="output-value">Stopped</span></span>
+          <span class="output-line"><span class="output-label">QUEUE:</span> <span class="output-value">Empty</span></span>
+        </div>
+        <div class="terminal-cursor-line">
+          <span class="prompt-symbol">$</span>
+          <span class="blinking-cursor">█</span>
+        </div>
+      </div>
+    `;
   }
 }
 
