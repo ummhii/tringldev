@@ -1,4 +1,5 @@
 import { initMusicPeriodSelector } from './music-period-selector.js';
+import { initTheme } from './theme.js';
 
 export function initRouter() {
   const loadingOverlay = document.createElement('div');
@@ -116,6 +117,9 @@ async function loadPage(path, animate = true) {
           if (isMusicPage) {
             initMusicPeriodSelector();
           }
+          
+          // Reinitialize theme switcher after page load
+          initTheme();
         }
       }, 0);
     }

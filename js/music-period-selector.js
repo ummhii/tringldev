@@ -82,7 +82,7 @@ function setCachedData(type, period, html) {
     };
     localStorage.setItem(key, JSON.stringify(data));
   } catch (e) {
-    console.warn('Failed to cache data:', e);
+    // Failed to cache data
   }
 }
 
@@ -95,12 +95,9 @@ function loadDataForList(listType, period, contentElement) {
     <div class="skeleton skeleton-text"></div>
     <div class="skeleton skeleton-text"></div>
   `;
-  
-  console.log(`Loading ${listType} data for period:`, period);
 
   const cachedData = getCachedData(listType, period);
   if (cachedData) {
-    console.log(`Cached ${listType} found`);
     contentElement.innerHTML = cachedData;
     return;
   }
@@ -108,20 +105,17 @@ function loadDataForList(listType, period, contentElement) {
   contentElement.innerHTML = skeletonHTML;
 
   if (listType === 'artists') {
-    console.log('Fetching artists for period:', period);
     htmx.ajax('GET', `${baseUrl}/top-artists?limit=10&period=${period}`, {
       target: contentElement,
       swap: 'innerHTML'
     });
   } else if (listType === 'albums') {
-    console.log('Fetching albums for period:', period);
     setTimeout(() => {
       const albumsUrl = `${baseUrl}/top-albums?limit=10&period=${period}`;
 
       fetch(albumsUrl)
         .then(res => res.json())
         .then(data => {
-          console.log('Albums fetch data:', data);
           const html = data.albums && data.albums.length > 0 
             ? data.albums.map((album, index) => `
                 <div class="artist-item">
@@ -141,7 +135,6 @@ function loadDataForList(listType, period, contentElement) {
           
           contentElement.innerHTML = html;
           setCachedData(listType, period, html);
-          console.log('Albums displayed and cached');
         })
         .catch(err => {
           console.error('Albums fetch error:', err);
@@ -149,7 +142,6 @@ function loadDataForList(listType, period, contentElement) {
         });
     }, 100);
   } else if (listType === 'tracks') {
-    console.log('Fetching tracks for period:', period);
     setTimeout(() => {
       htmx.ajax('GET', `${baseUrl}/top-tracks?limit=10&period=${period}`, {
         target: contentElement,

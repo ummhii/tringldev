@@ -13,9 +13,8 @@ function storeMusicData(type, period, html) {
       timestamp: Date.now()
     };
     localStorage.setItem(key, JSON.stringify(data));
-    console.log(`Stored ${type} data for period ${period}, key: ${key}`);
   } catch (e) {
-    console.warn('Failed to cache music data:', e);
+    // Failed to cache music data
   }
 }
 
@@ -23,18 +22,6 @@ export function initHtmxHandlers() {
   document.body.addEventListener('htmx:beforeRequest', handleBeforeRequest);
   document.body.addEventListener('htmx:beforeSwap', handleBeforeSwap);
   document.body.addEventListener('htmx:responseError', handleResponseError);
-  
-  document.body.addEventListener('htmx:afterRequest', (event) => {
-    if (event.detail.requestConfig.path.includes('top-albums')) {
-      console.log('Albums afterRequest:', event.detail);
-    }
-  });
-  
-  document.body.addEventListener('htmx:afterSwap', (event) => {
-    if (event.detail.requestConfig.path.includes('top-albums')) {
-      console.log('Albums afterSwap:', event.detail);
-    }
-  });
 }
 
 function handleBeforeSwap(event) {
@@ -111,9 +98,7 @@ function handleBeforeSwap(event) {
       
       event.detail.shouldSwap = false;
     } else if (path.includes('top-albums')) {
-      console.log('Processing top-albums response');
       const data = JSON.parse(event.detail.xhr.responseText);
-      console.log('Albums data:', data);
       const isMobile = window.innerWidth <= 768;
       const separator = isMobile ? '' : '- ';
       const html = data.albums && data.albums.length > 0 
@@ -132,14 +117,10 @@ function handleBeforeSwap(event) {
             </div>
           `).join('')
         : `<p class="small" style="color: var(--muted);">No album data available</p>`;
-      console.log('Generated HTML length:', html.length);
-      console.log('Target element:', target);
       target.innerHTML = html;
-      console.log('Set innerHTML complete');
       
       const periodMatch = path.match(/period=([^&]+)/);
       if (periodMatch) {
-        console.log('Storing albums with period:', periodMatch[1]);
         storeMusicData('albums', periodMatch[1], html);
       }
       
@@ -361,7 +342,7 @@ function handleResponseError(event) {
   } else if (path.includes('recent-tracks')) {
     target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch recent tracks</p>`;
   } else if (path.includes('/api/stats')) {
-    target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch stats</p>`;
+      target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch stats</p>`;
   } else if (path.includes('/api/contact')) {
     const responseDiv = document.getElementById('contact-response');
     responseDiv.hidden = false;
