@@ -926,6 +926,11 @@ textarea.terminal-input {
     transform: none !important;
   }
   
+  .terminal-box:hover[box-~='round']::before,
+  .terminal-box:hover[box-~='round']::after {
+    border-color: var(--surface1) !important;
+  }
+  
   .box-content {
     overflow: hidden;
     padding: 0 1ch;
