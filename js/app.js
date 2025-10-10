@@ -6,8 +6,17 @@ import { initKeyboardShortcuts } from './keyboard.js';
 import { initHamburgerMenu } from './hamburger-menu.js';
 import { initMusicPeriodSelector } from './music-period-selector.js';
 
+// Ensure page starts at the top on load/refresh
+if (history.scrollRestoration) {
+  history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
 document.addEventListener('DOMContentLoaded', function() {
   clearMusicCache();
+  
+  // Scroll to top again after DOM is ready
+  window.scrollTo(0, 0);
   
   initTheme();
   runInitialAnimations();

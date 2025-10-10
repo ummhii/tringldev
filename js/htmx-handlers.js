@@ -298,7 +298,7 @@ async function renderNowPlaying(data, target) {
             ${data.songUrl ? `
             <div class="output-line terminal-link-line">
               <span class="output-label">URL:</span>
-              <a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">${data.songUrl}</a>
+              <a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">Last.fm →</a>
             </div>
             ` : ''}
           </div>

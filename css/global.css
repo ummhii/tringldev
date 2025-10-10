@@ -201,6 +201,8 @@ html {
   font-size: 1em;
   line-height: 1.4;
   scrollbar-gutter: stable;
+  scroll-behavior: auto;
+  overflow-x: hidden;
 }
 
 ::-moz-selection {
@@ -696,7 +698,6 @@ textarea.terminal-input {
   font-size: 0.9em;
   text-align: center;
   position: relative;
-  margin-top: auto;
 }
 
 #footer p {
@@ -900,6 +901,10 @@ textarea.terminal-input {
     padding: 10px;
   }
   
+  .terminal-content {
+    gap: 15px;
+  }
+  
   #terminal-header {
     font-size: 0.9em;
     padding: 10px;
@@ -935,12 +940,14 @@ textarea.terminal-input {
     font-size: 0.8em;
     position: relative;
     margin-top: -1lh;
+    margin-bottom: 0.5lh;
     padding: 0 1ch;
+    transform: translateY(-2px);
   }
   
   .terminal-grid {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 15px;
   }
   
   .socials-grid {
@@ -957,6 +964,8 @@ textarea.terminal-input {
     flex-direction: row;
     align-items: center;
     position: relative;
+    padding-top: 5px;
+    padding-bottom: 5px;
   }
   
   .hamburger-menu {
@@ -974,7 +983,7 @@ textarea.terminal-input {
     top: 100%;
     left: 0;
     right: 0;
-    background: var(--secondary);
+    background: var(--surface0);
     border: 2px solid var(--tertiary);
     border-radius: 4px;
     padding: 15px;
@@ -993,6 +1002,11 @@ textarea.terminal-input {
     font-size: 0.9em;
     width: 100%;
   }
+
+  #footer {
+    margin-top: 0px;
+    gap: 0px;
+  }
   
   #footer .footer-links {
     margin-bottom: 0;
@@ -1010,7 +1024,9 @@ textarea.terminal-input {
 
 @media only screen and (max-width: 480px) {
   #header {
-    font-size: 0.9em;
+    font-size: 1em;
+    margin-bottom: 10px;
+    padding: 20px 10px 20px 5px;
   }
   
   .box-header {
