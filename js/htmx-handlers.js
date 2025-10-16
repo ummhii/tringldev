@@ -52,6 +52,40 @@ function handleBeforeSwap(event) {
       target.innerHTML = html;
       apiCache.set(cacheKey, html);
       event.detail.shouldSwap = false;
+    } else if (path.includes('/api/repos') && !path.includes('pinned-repo')) {
+      const repos = JSON.parse(xhr.responseText);
+      const reposToShow = repos.slice(0, 5);
+      const html = reposToShow.map((repo, index) => {
+        const topicsHtml = repo.topics && repo.topics.length > 0 
+          ? `<div class="repo-topics">${repo.topics.map(topic => `<span class="topic-tag">${topic}</span>`).join('')}</div>`
+          : '';
+        const updatedDate = repo.updatedAt ? new Date(repo.updatedAt).toLocaleDateString(undefined, { 
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric' 
+        }) : '';
+        
+        return `
+          <section box-="round" class="terminal-box" id="project-${index + 1}">
+            <h3 class="box-title">PROJECT ${index + 1}</h3>
+            <div class="box-content">
+              <a href="${repo.url}" class="terminal-link" target="_blank" rel="noopener noreferrer">
+                ${repo.name}
+              </a>
+              <p class="small">${repo.description || 'No description available'}</p>
+              ${repo.language ? `<p class="small">Language: <span class="highlight">${repo.language}</span></p>` : ''}
+              <p class="small">${repo.stars || 0} stars | ${repo.forks || 0} forks</p>
+              ${topicsHtml}
+              ${repo.homepage ? `<p class="small"><a href="${repo.homepage}" class="terminal-link" target="_blank" rel="noopener noreferrer">Homepage</a></p>` : ''}
+              ${updatedDate ? `<p class="small" style="color: var(--muted);">Updated: ${updatedDate}</p>` : ''}
+            </div>
+          </section>
+        `;
+      }).join('');
+      
+      target.innerHTML = html;
+      apiCache.set(cacheKey, html);
+      event.detail.shouldSwap = false;
     } else if (path.includes('/api/repo/') && !path.includes('pinned-repo')) {
       const data = JSON.parse(xhr.responseText);
       const topicsHtml = data.topics && data.topics.length > 0 
@@ -375,7 +409,16 @@ function handleResponseError(event) {
   const target = event.detail.target;
   const path = event.detail.requestConfig.path;
   
-  if (path.includes('pinned-repo') || (path.includes('/api/repo/') && !path.includes('pinned-repo'))) {
+  if (path.includes('/api/repos')) {
+    target.innerHTML = `
+      <section box-="round" class="terminal-box">
+        <h3 class="box-title">ERROR</h3>
+        <div class="box-content">
+          <p class="small" style="color: var(--error);">Unable to fetch repositories. Please try again later.</p>
+        </div>
+      </section>
+    `;
+  } else if (path.includes('pinned-repo') || (path.includes('/api/repo/') && !path.includes('pinned-repo'))) {
     target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch project data</p>`;
   } else if (path.includes('now-playing')) {
     target.innerHTML = `<p class="small" style="color: var(--error);">Unable to fetch music data</p>`;

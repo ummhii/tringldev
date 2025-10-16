@@ -34,67 +34,70 @@
     </header>
 
     <main class="terminal-content">
-      <div class="terminal-grid">
-        <section box-="round" class="terminal-box" id="featured-project">
-          <h2 class="box-title">FEATURED PROJECT</h2>
+      <div class="terminal-grid" id="projects-grid">
+        <section box-="round" class="terminal-box pinned-project" id="featured-project">
+          <h3 class="box-title"><span class="pin-icon"></span> PINNED PROJECT</h3>
           <div class="box-content">
-            <div
-              hx-get="https://tringldev-server.fly.dev/api/pinned-repo?repo=webp-converter-recode"
+            <div 
+              hx-get="https://tringldev-server.fly.dev/api/pinned-repo?repo=webp-converter-recode" 
               hx-trigger="load"
               hx-swap="innerHTML">
               <a href="#" class="terminal-link">Loading project...</a>
-              <p class="small">Fetching featured project...</p>
+              <p class="small">Fetching pinned project...</p>
             </div>
           </div>
         </section>
+        
+        <div id="dynamic-projects" style="display: contents;">
+          <section box-="round" class="terminal-box skeleton-project">
+            <h3 class="box-title">PROJECT 1</h3>
+            <div class="box-content">
+              <div class="skeleton skeleton-title"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text short"></div>
+            </div>
+          </section>
+          <section box-="round" class="terminal-box skeleton-project">
+            <h3 class="box-title">PROJECT 2</h3>
+            <div class="box-content">
+              <div class="skeleton skeleton-title"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text short"></div>
+            </div>
+          </section>
+          <section box-="round" class="terminal-box skeleton-project">
+            <h3 class="box-title">PROJECT 3</h3>
+            <div class="box-content">
+              <div class="skeleton skeleton-title"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text short"></div>
+            </div>
+          </section>
+          <section box-="round" class="terminal-box skeleton-project">
+            <h3 class="box-title">PROJECT 4</h3>
+            <div class="box-content">
+              <div class="skeleton skeleton-title"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text short"></div>
+            </div>
+          </section>
+          <section box-="round" class="terminal-box skeleton-project">
+            <h3 class="box-title">PROJECT 5</h3>
+            <div class="box-content">
+              <div class="skeleton skeleton-title"></div>
+              <div class="skeleton skeleton-text"></div>
+              <div class="skeleton skeleton-text short"></div>
+            </div>
+          </section>
+        </div>
+      </div>
 
-        <section box-="round" class="terminal-box" id="project-1">
-          <h3 class="box-title">PROJECT 1</h3>
-          <div class="box-content">
-            <div
-              hx-get="https://tringldev-server.fly.dev/api/repo/phantsia-cs2"
-              hx-trigger="load"
-              hx-swap="innerHTML">
-              <p class="loading">Loading project...</p>
-            </div>
-          </div>
-        </section>
-
-        <section box-="round" class="terminal-box" id="project-2">
-          <h3 class="box-title">PROJECT 2</h3>
-          <div class="box-content">
-            <div
-              hx-get="https://tringldev-server.fly.dev/api/repo/tringldev-server"
-              hx-trigger="load"
-              hx-swap="innerHTML">
-              <p class="loading">Loading project...</p>
-            </div>
-          </div>
-        </section>
-
-        <section box-="round" class="terminal-box" id="project-3">
-          <h3 class="box-title">PROJECT 3</h3>
-          <div class="box-content">
-            <div
-              hx-get="https://tringldev-server.fly.dev/api/repo/T3A2-B-Frontend"
-              hx-trigger="load"
-              hx-swap="innerHTML">
-              <p class="loading">Loading project...</p>
-            </div>
-          </div>
-        </section>
-
-        <section box-="round" class="terminal-box" id="project-4">
-          <h3 class="box-title">PROJECT 4</h3>
-          <div class="box-content">
-            <div
-              hx-get="https://tringldev-server.fly.dev/api/repo/webp-to-jpg-converter"
-              hx-trigger="load"
-              hx-swap="innerHTML">
-              <p class="loading">Loading project...</p>
-            </div>
-          </div>
-        </section>
+      <div
+        hx-get="https://tringldev-server.fly.dev/api/repos"
+        hx-trigger="load"
+        hx-swap="innerHTML"
+        hx-target="#dynamic-projects"
+        style="display: none;">
       </div>
 
       <!-- GITHUB PROFILE -->

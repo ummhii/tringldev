@@ -581,6 +581,47 @@
    PROJECTS PAGE
    ============================================ */
 
+.pinned-project {
+  position: relative;
+}
+
+.pinned-project[box-~='round']::before {
+  border-color: var(--primary);
+  border-width: 2px;
+  transition: all 0.3s ease;
+}
+
+.pinned-project:hover {
+  transform: translateY(-4px);
+}
+
+.pinned-project:hover[box-~='round']::before {
+  border-color: var(--accent);
+}
+
+.pinned-project .box-title {
+  color: var(--primary);
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(203, 166, 247, 0.3);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.pinned-project:hover .box-title {
+  color: var(--accent);
+  text-shadow: 0 0 15px rgba(116, 199, 236, 0.5);
+}
+
+.pin-icon::before {
+  content: "\f0403";
+  margin-right: 0.3em;
+  margin-left: 0.3em;
+  transition: color 0.3s ease;
+}
+
+.pinned-project:hover .pin-icon::before {
+  color: var(--accent);
+}
+
 .repo-topics {
   display: flex;
   flex-wrap: wrap;
