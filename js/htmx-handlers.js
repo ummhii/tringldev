@@ -304,37 +304,39 @@ async function renderNowPlaying(data, target) {
     const updateNowPlaying = (finalImageUrl) => {
       target.innerHTML = `
         <div class="music-playing-state">
-          <div class="terminal-prompt-line">
-            <span class="prompt-symbol">$</span>
-            <span class="prompt-command">music_player --now-playing</span>
-          </div>
-          <div class="terminal-output playing">
-            <div class="output-line">
-              <span class="output-label">STATUS:</span>
-              <span class="output-value playing">
-                PLAYING
-              </span>
+          <div class="now-playing-content-box">
+            <div class="terminal-prompt-line">
+              <span class="prompt-symbol">$</span>
+              <span class="prompt-command">music_player --now-playing</span>
             </div>
-            <div class="output-line">
-              <span class="output-label">TRACK:</span>
-              <span class="output-value highlight-value">${data.songName}</span>
+            <div class="terminal-output playing">
+              <div class="output-line">
+                <span class="output-label">STATUS:</span>
+                <span class="output-value playing">
+                  PLAYING
+                </span>
+              </div>
+              <div class="output-line">
+                <span class="output-label">TRACK:</span>
+                <span class="output-value highlight-value">${data.songName}</span>
+              </div>
+              <div class="output-line">
+                <span class="output-label">ARTIST:</span>
+                <span class="output-value">${data.artistName}</span>
+              </div>
+              ${data.albumName ? `
+              <div class="output-line">
+                <span class="output-label">ALBUM:</span>
+                <span class="output-value">${data.albumName}</span>
+              </div>
+              ` : ''}
+              ${data.songUrl ? `
+              <div class="output-line terminal-link-line">
+                <span class="output-label">URL:</span>
+                <a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">Last.fm →</a>
+              </div>
+              ` : ''}
             </div>
-            <div class="output-line">
-              <span class="output-label">ARTIST:</span>
-              <span class="output-value">${data.artistName}</span>
-            </div>
-            ${data.albumName ? `
-            <div class="output-line">
-              <span class="output-label">ALBUM:</span>
-              <span class="output-value">${data.albumName}</span>
-            </div>
-            ` : ''}
-            ${data.songUrl ? `
-            <div class="output-line terminal-link-line">
-              <span class="output-label">URL:</span>
-              <a href="${data.songUrl}" class="terminal-link music-link" target="_blank" rel="noopener noreferrer">Last.fm →</a>
-            </div>
-            ` : ''}
           </div>
           <div class="album-art-container">
             <img src="${finalImageUrl}" alt="Album art for ${data.albumName || data.songName}" class="album-art ${!data.albumArt ? 'placeholder' : ''}">
@@ -370,10 +372,12 @@ async function renderNowPlaying(data, target) {
           <span class="output-line"><span class="output-label">PLAYER:</span> <span class="output-value">Stopped</span></span>
           <span class="output-line"><span class="output-label">QUEUE:</span> <span class="output-value">Empty</span></span>
         </div>
+        <!--
         <div class="terminal-cursor-line">
           <span class="prompt-symbol">$</span>
           <span class="blinking-cursor">█</span>
         </div>
+        -->
       </div>
     `;
   }
